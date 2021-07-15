@@ -118,3 +118,6 @@ dist
 .pnp.*
 
 .DS_Store
+
+# DO NOT TACK CONFIGURATION FILES WITH API PASSWORD
+authentication.json

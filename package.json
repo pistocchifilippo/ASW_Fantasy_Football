@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/pistocchifilippo/ASW_Fantasy_Football/issues"
   },
-  "homepage": "https://github.com/pistocchifilippo/ASW_Fantasy_Football#readme"
+  "homepage": "https://github.com/pistocchifilippo/ASW_Fantasy_Football#readme",
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
 }

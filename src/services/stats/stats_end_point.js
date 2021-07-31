@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const DAY_LIMIT
+const DAY_LIMIT = 7
 
 app.get("/stats/evaluation/:day", (req,res) => {
     const day = req.params.day

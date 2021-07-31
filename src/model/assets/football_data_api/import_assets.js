@@ -46,9 +46,9 @@ const all_players = async () => {
 
 fs = require('fs');
 
-all_teams().then(teams => {
-    fs.writeFileSync("./src/model/assets/football_data_api/materialized_assets/teams.json",JSON.stringify(teams))
-})
+// all_teams().then(teams => {
+//     fs.writeFileSync("./src/model/assets/football_data_api/materialized_assets/teams.json",JSON.stringify(teams))
+// })
 all_players().then(player => {
     fs.writeFileSync("./src/model/assets/football_data_api/materialized_assets/players.json",JSON.stringify(player))
 })

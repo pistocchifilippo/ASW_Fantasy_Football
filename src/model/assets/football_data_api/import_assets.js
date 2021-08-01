@@ -33,7 +33,7 @@ const all_players_for_team = async (team) => {
 
 const all_players = async () => {
     try {
-        teams_id = [759,760]//await all_teams_code()
+        teams_id = await all_teams_code()
         pl = teams_id.map(async (id) => {
             response = await axios.get("https://api.football-data.org/v2/teams/" + id, header)
             return response.data.squad

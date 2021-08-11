@@ -11,7 +11,7 @@ const header = require("./api_authentication/credentials.js")
 const teams_path = "./src/initialization/download/downloaded_asset/teams.json"
 const players_path = "./src/initialization/download/downloaded_asset/players.json"
 
-const mapper = require("./transformations.js")
+const mapper = require("./mappers.js")
 
 const all_teams = async () => {
     try {

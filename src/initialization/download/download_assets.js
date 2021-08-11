@@ -2,6 +2,8 @@
  * The following script will be executed to connect to the Football Data API,
  * downloading basically the set-up assets related to a given league (teams and the line-up of each team).
  * 
+ * Information will then be stored on file (/downloaded_asset) adjusting the layout of json documents.
+ * 
  * The code is related to Euro 2020 competition.
  */
 

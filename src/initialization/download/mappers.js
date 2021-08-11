@@ -8,7 +8,7 @@ const replace_id = (d) => {
 }
 
 const map_player = (document,id) => {
-    replace_id(document)
+    delete document.id
     document.team_id = id
     document.value = random_interval(4,13).toFixed(1)
     score = []

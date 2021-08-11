@@ -66,7 +66,7 @@ fs = require('fs');
 
 // all_teams().then(console.log)
 // all_teams_code().then(console.log)
-// all_players().then(console.log)
+// all_players().then(x => x.forEach(p => console.log(p)))
 
 
 // all_players_for_team(784).then(console.log)

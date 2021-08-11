@@ -11,9 +11,13 @@ const header = require("./api_authentication/credentials.js")
 const teams_path = "./src/initialization/download/downloaded_asset/teams.json"
 const players_path = "./src/initialization/download/downloaded_asset/players.json"
 
+const mapper = require("./transformations.js")
+
 const all_teams = async () => {
     try {
         const response = await axios.get("https://api.football-data.org/v2/competitions/EC/teams", header)
+        teams = response.data.teams
+        teams = teams.map(mapper.map_team)
         return response.data.teams
     } catch (error) {
         return error
@@ -44,11 +48,10 @@ const all_players_for_team = async (team_id) => {
 const all_players = async () => {
     try {
         teams_id = await all_teams_code()
-        teams_id = teams_id.map(async x => {
-            p = await all_players_for_team(x)
+        teams_id = teams_id.map(async team_id => {
+            p = await all_players_for_team(team_id)
             p = p.map(player => {
-                player.team_id = x
-                return player
+                return mapper.map_player(player,team_id)
             })
             return p
         })
@@ -65,12 +68,13 @@ fs = require('fs');
 // all_teams_code().then(console.log)
 // all_players().then(console.log)
 
-// all_teams().then(teams => {
-//     fs.writeFileSync(teams_path,JSON.stringify(teams))
-// })
+
 // all_players_for_team(784).then(console.log)
 // all_teams_code().then(console.log)
 // all_players().then(console.log)
+// all_teams().then(teams => {
+//     fs.writeFileSync(teams_path,JSON.stringify(teams))
+// })
 all_players().then(player => {
     fs.writeFileSync(players_path,JSON.stringify(player))
 })

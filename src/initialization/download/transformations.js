@@ -3,14 +3,16 @@ const replace_id = (d) => {
     delete d.id
 }
 
-const map_player = (document) => {
+const map_player = (document,id) => {
+    replace_id(document)
+    document.team_id = id
     return document
 }
 
 const map_team = (document) => {
     replace_id(document)
-    console.log(document)
-    console.log("___")
+    // console.log(document)
+    // console.log("___")
     return document
 }
 

@@ -9,7 +9,8 @@
 const MongoClient = require('mongodb').MongoClient
 const mongo_address = "mongodb://localhost:27017/"
 const mongo_db = "FantasyFootball"
-const mongo_collection = "Stats"
+const players_collection = "Players"
+const teams_collection = "Teams"
 
 const fs = require("fs")
 const players_path = "./src/initialization/download/downloaded_asset/players.json"
@@ -17,12 +18,12 @@ const teams_path = "./src/initialization/download/downloaded_asset/teams.json"
 
 const load_players = async (players,db) => {
     for (let i = 0; i < players.length; i++) {
-        await db.collection(mongo_collection).insertMany(players[i])
+        await db.collection(players_collection).insertMany(players[i])
     }
 }
 
 const load_teams = async (teams,db) => {
-    await db.collection(mongo_collection).insertMany(teams)
+    await db.collection(teams_collection).insertMany(teams)
 }
 
 const load_assets = async () => {

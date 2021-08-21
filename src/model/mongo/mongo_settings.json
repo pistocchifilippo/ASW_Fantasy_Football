@@ -1,0 +1,6 @@
+{
+    "mongo_address":"mongodb://localhost:27017/",
+    "mongo_db":"FantasyFootball",
+    "players_collection":"Players",
+    "teams_collection":"Teams"
+}

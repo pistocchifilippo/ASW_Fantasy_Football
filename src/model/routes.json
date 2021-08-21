@@ -1,4 +1,4 @@
 {
-    "players_route":"/asw/fantasy_football/model/players/:id",
-    "teams_route":"/asw/fantasy_football/model/teams/:id"
+    "players_route":"/asw/fantasy_football/model/players",
+    "teams_route":"/asw/fantasy_football/model/teams"
 }

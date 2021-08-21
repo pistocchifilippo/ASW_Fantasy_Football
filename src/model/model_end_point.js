@@ -4,7 +4,9 @@ const routes = require("./routes.json")
 const mongo_settings = require("./mongo_settings.json")
 const MongoClient = require('mongodb').MongoClient
 
-const get_mongo_item_by_id = async (pattern,res,collection) => {
+app.use(express.json());
+
+const match_pattern_mongo = async (pattern,res,collection) => {
     MongoClient.connect(mongo_settings.mongo_address + mongo_settings.mongo_db, (err, client) => {
         if(err) throw err
     
@@ -19,12 +21,12 @@ const get_mongo_item_by_id = async (pattern,res,collection) => {
 }
 
 app.get(routes.teams_route, (req,res) => {
-    const pattern = {"_id":parseInt(req.params.id)}
-    get_mongo_item_by_id(pattern,res,mongo_settings.teams_collection)
+    const pattern = req.body
+    match_pattern_mongo(pattern,res,mongo_settings.teams_collection)
 })
 app.get(routes.players_route, (req,res) => {
-    const pattern = {"_id":parseInt(req.params.id)}
-    get_mongo_item_by_id(pattern,res,mongo_settings.players_collection)
+    const pattern = req.body
+    match_pattern_mongo(pattern,res,mongo_settings.players_collection)
 })
 
 app.use((req,res,next) => {

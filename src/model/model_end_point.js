@@ -1,34 +1,21 @@
 const express = require("express")
 const app = express()
 const routes = require("./routes.json")
-const mongo_settings = require("./mongo_settings.json")
-// const MongoClient = require('mongodb').MongoClient
-const { MongoClient } = require("mongodb");
-const client = new MongoClient(mongo_settings.mongo_address);
 
+const mongo_settings = require("./mongo/mongo_settings.json")
+const mongo_query = require("./mongo/mongo_functions.js")
 
 app.use(express.json());
 
-const match_pattern_mongo = async (pattern,collection) => {
-    try{
-        await client.connect()
-        const database = client.db(mongo_settings.mongo_db);
-        const coll = database.collection(collection);
-        const x = await coll.findOne(pattern);
-        return x
-    } finally {
-        await client.close()
-    }
-}
-
 app.get(routes.teams_route, async (req,res) => {
-    const pattern = req.body
-    const x = await match_pattern_mongo(pattern,mongo_settings.teams_collection)
+    const query = req.body
+    const x = await mongo_query.find_one(query,mongo_settings.teams_collection)
     res.json(x)
 })
-app.get(routes.players_route, (req,res) => {
-    const pattern = req.body
-    match_pattern_mongo(pattern,res,mongo_settings.players_collection)
+app.get(routes.players_route, async (req,res) => {
+    const query = req.body
+    const x = await mongo_query.find_one(query,mongo_settings.players_collection)
+    res.json(x)
 })
 
 app.use((req,res,next) => {

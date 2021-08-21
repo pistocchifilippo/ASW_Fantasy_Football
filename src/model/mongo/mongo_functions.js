@@ -7,7 +7,7 @@ const find_one = async (query,collection) => {
         await client.connect()
         const database = client.db(mongo_settings.mongo_db)
         const coll = database.collection(collection)
-        const x = await coll.findOne(pattern)
+        const x = await coll.findOne(query)
         return x
     } finally {
         await client.close()
@@ -35,4 +35,9 @@ const insert_many = async (document, collection) => {
         await client.close()
     }
 }
+
+exports.find_one = find_one
+exports.insert_one = insert_one
+exports.insert_many = insert_many
+
 

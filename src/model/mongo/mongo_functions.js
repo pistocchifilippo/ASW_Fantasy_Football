@@ -14,12 +14,25 @@ const find_one = async (query,collection) => {
     }
 }
 
+const find_multiple = async (query,collection) => {
+    try {
+        await client.connect()
+        const database = client.db(mongo_settings.mongo_db)
+        const coll = database.collection(collection)
+        const cursor = await coll.find(query)
+        const array = await cursor.toArray()
+        return array
+    } finally {
+        await client.close()
+    }
+}
+
 const insert_one = async (document, collection) => {
     try {
         await client.connect()
         const database = client.db(mongo_settings.mongo_db)
         const coll = database.collection(collection)
-        const x = await coll.insertOne(document)
+        await coll.insertOne(document)
     } finally {
         await client.close()
     }
@@ -30,14 +43,30 @@ const insert_many = async (document, collection) => {
         await client.connect()
         const database = client.db(mongo_settings.mongo_db)
         const coll = database.collection(collection)
-        const x = await coll.insertMany(document)
+        await coll.insertMany(document)
+    } finally {
+        await client.close()
+    }
+}
+
+const update = async (query, update, collection) => {
+    try {
+        await client.connect()
+        const database = client.db(mongo_settings.mongo_db)
+        const coll = database.collection(collection)
+        const updateDoc = {
+            $set: update
+        }
+        await coll.updateOne(query, updateDoc)
     } finally {
         await client.close()
     }
 }
 
 exports.find_one = find_one
+exports.find_multiple = find_multiple
 exports.insert_one = insert_one
 exports.insert_many = insert_many
+exports.update = update
 
 

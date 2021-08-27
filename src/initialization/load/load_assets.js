@@ -6,38 +6,28 @@
  * since the team is using a free plan with limited number of requests.
  */
 
-const MongoClient = require('mongodb').MongoClient
-const mongo_settings = require("../../model/mongo_settings.json")
+const mongo_settings = require("../../model/mongo/mongo_settings.json")
 
 const fs = require("fs")
 const players_path = "./src/initialization/download/downloaded_asset/players.json"
 const teams_path = "./src/initialization/download/downloaded_asset/teams.json"
+const mongo = require("../../model/mongo/mongo_functions.js")
 
-const load_players = async (players,db) => {
+const load_players = async (players) => {
     for (let i = 0; i < players.length; i++) {
-        await db.collection(mongo_settings.players_collection).insertMany(players[i])
+        await mongo.insert_many(players[i],mongo_settings.players_collection)
     }
 }
 
-const load_teams = async (teams,db) => {
-    await db.collection(mongo_settings.teams_collection).insertMany(teams)
+const load_teams = async (teams) => {
+    await mongo.insert_many(teams,mongo_settings.teams_collection)
 }
 
 const load_assets = async () => {
     const players = JSON.parse(fs.readFileSync(players_path, 'utf8'))
     const teams = JSON.parse(fs.readFileSync(teams_path, 'utf8'))
-
-    MongoClient.connect(mongo_settings.mongo_address + mongo_settings.mongo_db, async (err, client) => {
-        if(err) throw err
-
-        // Connect to the db
-        var db = client.db(mongo_settings.mongo_db);
-
-        // Loading players
-        await load_teams(teams,db)
-        await load_players(players,db)
-        client.close()
-    });
+    await load_teams(teams)
+    await load_players(players)
 }
 
 load_assets()

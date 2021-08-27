@@ -1,0 +1,111 @@
+@media (min-width: 761px) {
+    .show-on-desktop { 
+        display: none !important;
+    }
+
+    .desktop-title{
+        font-size:36px;
+    }
+
+    .desktop-login {
+        max-width: 40%;
+    }
+
+    .desktop-subtitle{
+        font-size:18px;
+    }
+
+    .button-desktop{
+        width:auto;
+    }
+
+    .card-desktop{
+        width:auto;
+    }
+
+    .desktop-menu{
+        display:none;
+    }
+
+}
+
+.error-card{
+    margin:0px;
+    padding:0px;
+    color:red;
+    font-size:13px;
+    font-family:"Guardian Headline !important";
+    font-weight: bold;
+    background-color: yellow;
+}
+
+.myfont{
+    font-family:"Guardian Headline !important";
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.toolbar-title{
+    font-family:"Guardian Headline !important";
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.toolbar-element{
+    font-family:"Guardian Headline !important";
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: white;
+}
+
+
+
+@media (max-width: 760px) {
+    .show-on-mobile { 
+        display: none !important; }
+
+    .mobile-login {
+        max-width: 100%;
+        color:black;
+        box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%), 0px 0px 0px 0px rgb(0 0 0 / 14%), 0px 0px 0px 0px rgb(0 0 0 / 12%) !important;
+    }
+
+    .toolbar-mobile{
+        width: 100%;
+        text-align: center;
+    }
+
+    .mobile-nav{
+        display: none;
+    }
+
+    .mobile-menu{
+        width: 100%;
+        font-family:"Guardian Headline !important";
+    }
+    
+    .mobile-title {
+        font-size: 4vw;
+    }
+
+    .mobile-subtitle {
+        font-size: 2vw;
+    }
+
+    .mobile-footer {
+        font-size: 1vw;
+    }
+
+    button{
+        width: 90%;
+    }
+
+    .button-mobile{
+        width: 100%;
+    }
+ 
+    .card-mobile{
+        width: 100%;
+    }
+}

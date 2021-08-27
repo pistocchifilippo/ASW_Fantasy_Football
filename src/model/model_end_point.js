@@ -17,6 +17,25 @@ app.get(routes.players_route, async (req,res) => {
     const x = await mongo_query.find_one(query,mongo_settings.players_collection)
     res.json(x)
 })
+app.post(routes.leagues, async (req,res) => {
+    // The body should contain: {name,admin_id,player_limit}
+    const league = req.body
+    if (league.hasOwnProperty("name") && league.hasOwnProperty("admin_id") && league.hasOwnProperty("player_limit")) 
+    {
+        league.members=[league.admin_id]
+        await mongo_query.insert_one(league,mongo_settings.leagues_collection)
+        res.sendStatus(200)
+    }
+    else 
+    {    
+        res.sendStatus(500)
+    }
+})
+app.get(routes.leagues, async (req,res) => {
+    const query = req.body
+    const x = await mongo_query.find_one(query,mongo_settings.leagues_collection)
+    res.json(x)
+})
 
 app.use((req,res,next) => {
     res.setHeader('Content-Type', 'text/plain')

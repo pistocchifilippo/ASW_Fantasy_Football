@@ -78,11 +78,24 @@ app.post(routes.day_advancement, async (req,res) => {
     const current_day = document.current_day
     const new_day = current_day + 1
     const day_limit = document.limit
+    // await mongo_query.update({},{"current_day":new_day},collections.days_collection)
 
-    if(current_day == day_limit){
+
+    if(current_day >= day_limit){
         res.sendStatus(500)
     } else {
-        await mongo_query.update({},{"current_day":new_day},collections.days_collection)
+        all_line_up = await mongo_query.find_multiple({},collections.line_up_collection)
+        for (let i = 0; i < all_line_up.length; i++) {
+            line_up = all_line_up[i]
+            playing_players = line_up.playing
+            score = 0
+            for (let j = 0; j < playing_players.length; j++) {
+                player = await mongo_query.find_one({"_id":playing_players[j]},collections.players_collection)//.score[current_day-1]
+                score = score + player.score[current_day-1]
+            }
+            console.log(score)
+            await mongo_query.update({"_id":line_up._id},{"score":score},collections.line_up_collection)
+        }
         res.sendStatus(200)
     }
 })

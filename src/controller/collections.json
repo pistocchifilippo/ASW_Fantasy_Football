@@ -2,5 +2,7 @@
     "players_collection":"Players",
     "teams_collection":"Teams",
     "leagues_collection":"Leagues",
-    "days_collection":"Days"
+    "days_collection":"Days",
+    "profiles_collection":"Profiles",
+    "line_up_collection":"LineUp"
 }

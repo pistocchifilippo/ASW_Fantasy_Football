@@ -23,11 +23,20 @@ const load_teams = async (teams) => {
     await mongo.insert_many(teams,mongo_settings.teams_collection)
 }
 
+const load_days = async (day_limit) => {
+    const day_document = {
+        "current_day":0,
+        "limit":day_limit
+    }
+    await mongo.insert_one(day_document,mongo_settings.days_collection)
+}
+
 const load_assets = async () => {
     const players = JSON.parse(fs.readFileSync(players_path, 'utf8'))
     const teams = JSON.parse(fs.readFileSync(teams_path, 'utf8'))
     await load_teams(teams)
     await load_players(players)
+    await load_days(7)
 }
 
 load_assets()

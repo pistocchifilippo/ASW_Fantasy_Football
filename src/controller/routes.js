@@ -4,19 +4,23 @@ const routes = require("./routes.json")
 
 const collections = require("./collections.json")
 const mongo_query = require("../model/mongo/mongo_functions.js")
+const { ObjectId } = require("mongodb")
 
 app.use(express.json());
 
+// Queries on teams
 app.get(routes.teams_route, async (req,res) => {
     const query = req.body
     const x = await mongo_query.find_one(query,collections.teams_collection)
     res.json(x)
 })
+// Queries on players
 app.get(routes.players_route, async (req,res) => {
     const query = req.body
     const x = await mongo_query.find_one(query,collections.players_collection)
     res.json(x)
 })
+// Create a league
 app.post(routes.leagues, async (req,res) => {
     // The body should contain: {name,admin_id,player_limit}
     const league = req.body
@@ -31,10 +35,34 @@ app.post(routes.leagues, async (req,res) => {
         res.sendStatus(500)
     }
 })
+// Queries a league
 app.get(routes.leagues, async (req,res) => {
     const query = req.body
+    // Transform the ID syntax
+    if(query.hasOwnProperty("_id")){
+        query._id = ObjectId(query._id)
+    }
     const x = await mongo_query.find_one(query,collections.leagues_collection)
     res.json(x)
+})
+
+/** Put players into a league
+ 
+{
+    "_id":"",
+    "player": "p_id"
+}
+
+ *  */
+app.put(routes.leagues, async (req,res) => {
+    const body = req.body
+    const query = {"_id":ObjectId(body.league_id)}
+    const x = await mongo_query.find_one(query,collections.leagues_collection)
+    const members = x.members//.push(body.new)
+    members.push(body.new_member)
+    console.log(members)
+    await mongo_query.update(query,{"members":members},collections.leagues_collection)
+    res.sendStatus(200)
 })
 
 app.use((req,res,next) => {

@@ -1,5 +1,6 @@
 {
     "players_collection":"Players",
     "teams_collection":"Teams",
-    "leagues_collection":"Leagues"
+    "leagues_collection":"Leagues",
+    "days_collection":"Days"
 }

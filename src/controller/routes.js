@@ -65,6 +65,28 @@ app.put(routes.leagues, async (req,res) => {
     res.sendStatus(200)
 })
 
+app.get(routes.day_advancement, async (req,res) => {
+    const days = await mongo_query.find_one({},collections.days_collection)
+    res.json(days)
+})
+
+/**
+ * Makes a day advancement
+ */
+app.post(routes.day_advancement, async (req,res) => {
+    const document = await mongo_query.find_one({},collections.days_collection)
+    const current_day = document.current_day
+    const new_day = current_day + 1
+    const day_limit = document.limit
+
+    if(current_day == day_limit){
+        res.sendStatus(500)
+    } else {
+        await mongo_query.update({},{"current_day":new_day},collections.days_collection)
+        res.sendStatus(200)
+    }
+})
+
 app.use((req,res,next) => {
     res.setHeader('Content-Type', 'text/plain')
     res.status(404).send("Page not found...");

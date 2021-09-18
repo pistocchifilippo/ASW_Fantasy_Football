@@ -1,5 +1,6 @@
 {
     "players_route":"/asw/fantasy_football/model/players",
     "teams_route":"/asw/fantasy_football/model/teams",
-    "leagues":"/asw/fantasy_football/model/leagues"
+    "leagues":"/asw/fantasy_football/model/leagues",
+    "day_advancement":"/asw/fantasy_football/model/day_advancement"
 }

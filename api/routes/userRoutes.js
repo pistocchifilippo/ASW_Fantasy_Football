@@ -8,20 +8,33 @@ module.exports = app => {
     .post(userController.create_a_user);
 
   app
+    .route('/config')
+    .get(userController.getConfig)
+
+  app
     .route('/users/check')
-    .post(userController.checkUser);  
-    
+    .post(userController.checkUser);
+
+  app
+    .route('/users/profile/:id')
+    .get(userController.getProfile)
+    .put(userController.editProfile);
+
+  app
+    .route('/users/edit/:userId')
+    .put(userController.editUser);
+
   app
     .route('/users/register')
     .post(userController.register);
 
   app
     .route('/users/auth')
-    .post(userController.login);   
-  
+    .post(userController.login);
+
   app
     .route('/users/checktkn')
-    .post(userController.checkToken); 
+    .post(userController.checkToken);
 
   app
     .route('/users/:userId')
@@ -32,4 +45,5 @@ module.exports = app => {
   app
     .route('/authenticate')
     .post(userController.checkOnLogin);
+
 };

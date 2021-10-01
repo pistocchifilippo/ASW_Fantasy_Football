@@ -8,7 +8,7 @@ const routes = require('./api/routes/userRoutes');
 
 mongoose.Promise = global.Promise;
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://localhost/FantasyFootball', { useNewUrlParser: true, useUnifiedTopology: true  });
+mongoose.connect('mongodb://localhost/FantasyFootball', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const port = 3000;
 const app = express();

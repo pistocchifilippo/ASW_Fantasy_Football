@@ -1,15 +1,18 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Users from '@/views/Users.vue';
+import Home from '@/views/Home.vue';
 import New from '@/views/New.vue';
 import Show from '@/views/Show.vue';
 import Edit from '@/views/Edit.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import Lineups from '@/views/Lineups.vue';
 import NotFound from '@/views/404.vue';
 import Unauthorized from '@/views/Unauthorized.vue';
 import Main from '@/views/Main.vue';
 import Profile from '@/views/Profile.vue';
+import Team from '@/views/Team.vue';
 
 Vue.use(Router);
 
@@ -20,7 +23,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/users'
+      name: 'home',
+      component: Home
     },
     {
       path: '/users',
@@ -46,11 +50,21 @@ export default new Router({
       path: '/signon',
       name: 'register',
       component: Register
-    },    
+    },
     {
       path: '/main',
       name: 'main',
       component: Main
+    },
+    {
+      path: '/team',
+      name: 'team',
+      component: Team
+    },
+    {
+      path: '/lineups',
+      name: 'lineups',
+      component: Lineups
     },
     {
       path: '/users/new',
@@ -71,12 +85,12 @@ export default new Router({
       path: '/unauthorized',
       name: 'unauthorized',
       component: Unauthorized
-    },
+    }, 
     {
       path: '*',
       name: '404',
       component: NotFound
     }
-   
+
   ]
 });

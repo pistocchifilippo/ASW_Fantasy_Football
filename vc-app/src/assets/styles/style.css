@@ -1,111 +1,301 @@
 @media (min-width: 761px) {
-    .show-on-desktop { 
+    .show-on-desktop {
         display: none !important;
     }
-
-    .desktop-title{
-        font-size:36px;
+    .desktop-title {
+        font-size: 36px;
     }
-
     .desktop-login {
         max-width: 40%;
     }
-
-    .desktop-subtitle{
-        font-size:18px;
+    .desktop-lineup {
+        width: 40%;
     }
-
-    .button-desktop{
-        width:auto;
+    .desktop-field {
+        width: 60%;
     }
-
-    .card-desktop{
-        width:auto;
+    .desktop-subtitle {
+        font-size: 18px;
     }
-
-    .desktop-menu{
-        display:none;
+    .button-desktop {
+        width: auto;
     }
-
+    .card-desktop {
+        width: auto;
+    }
+    .desktop-menu {
+        display: none;
+    }
+    .desktop_infobox {
+        width: 30%;
+    }
 }
 
-.error-card{
-    margin:0px;
-    padding:0px;
-    color:red;
-    font-size:13px;
-    font-family:"Guardian Headline !important";
+.half {
+    width: 75%;
+    margin: auto;
+}
+
+.fill {
+    width: 100%;
+    max-width: 100%;
+}
+
+.infocard {
+    color: white !important;
+    padding: 0.5%;
+    font-family: "Guardian Headline !important";
+    font-weight: bold;
+    font-size: 1rem !important;
+}
+
+.field {
+    height: 430px;
+    background-image: url("../soccer-field.jpeg");
+    background-size: 100% 100%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+.field-row {
+    height: 11%;
+    min-height: 11%;
+}
+
+.field-row-central {
+    height: 12%;
+    min-height: 12%;
+}
+
+.centered {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.right {
+    text-align: right;
+    justify-content: right;
+}
+
+.field-col {
+    width: 23%;
+    margin: auto;
+}
+
+.field-col-last {
+    width: 80%;
+}
+
+
+.lineup-avatar {
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    padding: 0px;
+    color: black;
+    font-family: "Guardian Headline !important";
+    font-weight: bold;
+    font-size: 0.5rem;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+}
+
+.field-avatar {
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    padding: 0px;
+    color: black;
+    font-family: "Guardian Headline !important";
+    font-weight: bold;
+    font-size: 0.5rem;
+    min-width: 30px !important;
+    min-height: 30px !important;
+}
+
+.bordered {
+    border: 1px solid black !important;
+}
+
+.v-avatar.field-avatar.bordered {
+    border: 1px solid black !important;
+    font-weight: bold;
+}
+
+.rem-btn{
+    font-size: 12px !important;
+    padding: 2px !important;
+}
+
+.v-avatar.lineup-avatar.bordered {
+    border: 1px solid black !important;
+}
+
+.theme--light.v-btn.v-btn--disabled.team-button {
+    color: green !important;
+}
+
+.custom-placeholer-color input::placeholder {
+    color: red!important;
+}
+
+.theme--light.v-btn.v-btn--disabled.buy {
+    color: darkgrey !important;
+}
+
+.theme--light.v-text-field>.v-input__control>.v-input__slot {
+    margin: 0px;
+}
+
+.theme--light.v-text-field>.v-input__control>.v-input__slot:before {
+    border-color: rgb(33, 150, 243) !important;
+}
+
+.theme--light.v-btn.v-btn--disabled.title-button {
+    color: rgb(33, 150, 243) !important;
+}
+
+.theme--light.v-btn.v-btn--disabled.blu-button {
+    color: rgb(33, 150, 243) !important;
+}
+
+.theme--light.v-btn.v-btn--disabled.title-button .v-icon {
+    color: rgb(33, 150, 243) !important;
+}
+
+.v-text-field.v-input__control.v-input__slot:after {
+    content: none;
+}
+
+.search {
+    width: 30px;
+}
+
+.main {
+    margin: 0px;
+    padding: 0px;
+    background-color: white;
+    font-family: "Guardian Headline !important";
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.middle {
+    vertical-align: middle;
+}
+
+.title-button {
+    width: 100%;
+}
+
+.title-par {
+    width: 100%;
+}
+
+.myfont_infobox {
+    font-family: "Guardian Headline !important";
+    font-weight: bold;
+    color: white;
+    font-size: 1rem;
+    padding-left: 2%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+}
+
+.header_infobox {
+    font-family: "Guardian Headline !important";
+    font-weight: bold;
+    color: rgb(33, 150, 243) !important;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.scroll {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.list-item {
+    font-size: 8px;
+    font-family: "Guardian Headline !important";
+}
+
+.error-card {
+    margin: 0px;
+    padding: 0px;
+    color: red;
+    font-size: 13px;
+    font-family: "Guardian Headline !important";
     font-weight: bold;
     background-color: yellow;
 }
 
-.myfont{
-    font-family:"Guardian Headline !important";
+.myfont {
+    font-family: "Guardian Headline !important";
     font-weight: bold;
     font-size: 1.5rem;
 }
 
-.toolbar-title{
-    font-family:"Guardian Headline !important";
+.toolbar-title {
+    font-family: "Guardian Headline !important";
     font-weight: bold;
     font-size: 1.5rem;
     color: white;
 }
 
-.toolbar-element{
-    font-family:"Guardian Headline !important";
+.toolbar-element {
+    font-family: "Guardian Headline !important";
     font-weight: bold;
     font-size: 0.875rem;
     color: white;
 }
 
-
-
 @media (max-width: 760px) {
-    .show-on-mobile { 
-        display: none !important; }
-
+    .show-on-mobile {
+        display: none !important;
+    }
     .mobile-login {
         max-width: 100%;
-        color:black;
+        color: black;
         box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 20%), 0px 0px 0px 0px rgb(0 0 0 / 14%), 0px 0px 0px 0px rgb(0 0 0 / 12%) !important;
     }
-
-    .toolbar-mobile{
+    .mobile-lineup {
+        margin-top: 1%;
+        width: 100%;
+    }
+    .toolbar-mobile {
         width: 100%;
         text-align: center;
     }
-
-    .mobile-nav{
+    .mobile-nav {
         display: none;
     }
-
-    .mobile-menu{
+    .mobile-menu {
         width: 100%;
-        font-family:"Guardian Headline !important";
+        font-family: "Guardian Headline !important";
     }
-    
     .mobile-title {
         font-size: 4vw;
     }
-
     .mobile-subtitle {
         font-size: 2vw;
     }
-
     .mobile-footer {
         font-size: 1vw;
     }
-
-    button{
+    button {
         width: 90%;
     }
-
-    .button-mobile{
+    .button-mobile {
         width: 100%;
     }
- 
-    .card-mobile{
+    .card-mobile {
+        width: 100%;
+    }
+    .mobile_infobox {
         width: 100%;
     }
 }

@@ -1,75 +1,110 @@
 <template>
-    <v-main>
-        <LoggedToolbar v-bind:id="this.user.id" />
-        <v-card class="mx-auto my-12 mobile-login desktop-login">        
-            <v-form id="loginForm" name="login"  >
-                <v-card-title flat class="myfont justify-center mobile-title desktop-title">
-                    Welcome: this is Fantasy Football
-                </v-card-title>
-                <v-card-title flat class="myfont show-on-mobile justify-center mobile-title desktop-title">
-                    You're on mobile
-                </v-card-title>
-                <v-card-title flat class="myfont show-on-desktop justify-center mobile-title desktop-title">
-                    You're on desktop
-                </v-card-title>
-                <v-card-title flat class="myfont justify-center mobile-title desktop-title">
-                    You are : {{this.user.username}}
-                </v-card-title>
-            </v-form>
-        </v-card>
-        <v-footer color="blue" bottom class="justify-center">
-            <Footer title="footer"/>
-        </v-footer>
-    </v-main>
+  <v-main>
+    <LoggedToolbar v-if="this.user.id" :userid="this.user.id" />
+    <v-container>
+      <ProfileMenu
+        v-if="this.user.id"
+        :username="this.user.username"
+        :budget="this.profile.budget"
+        :score="this.profile.score"
+      />
+    </v-container>
+    <v-card flat class="mx-auto mobile-login desktop-login">
+      <v-container fluid>
+        <v-row dense>
+          <v-col v-for="card in cards" :key="card.title" :cols="card.flex">
+            <v-card :to="card.to" dense class="justify-center">
+              <v-img
+                :to="card.to"
+                :src="card.src"
+                class="align-end"
+                height="200px"
+              ></v-img>
+              <v-card-title
+                class="main justify-center"
+                color="black"
+                v-text="card.title"
+              ></v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+
+    <v-footer color="blue" bottom class="justify-center">
+      <Footer title="footer" />
+    </v-footer>
+  </v-main>
 </template>
 
 <script>
-    import Vue from 'vue';
-    import VueCookie from 'vue-cookie';
-    import {api} from '../helpers/helpers';
-    import LoggedToolbar from '@/views/LoggedToolbar.vue';
-    import Footer from '@/views/Footer.vue';
+import Vue from "vue";
+import VueCookie from "vue-cookie";
+import { api } from "../helpers/helpers";
+import { utils } from "../helpers/utils";
+import LoggedToolbar from "@/views/LoggedToolbar.vue";
+import ProfileMenu from "@/views/ProfileMenu.vue";
+import Footer from "@/views/Footer.vue";
 
-    Vue.use(VueCookie);
+Vue.use(VueCookie);
 
-    export default {
-        components: {
-            LoggedToolbar, Footer
-        },
-        data : () => ({
-            user: api.newUser(),
-        }), 
-        created(){
-            let token = api.readToken("auth");
-            if (token!=""){
-                api.checkToken(token)
-                    .then(id => {
-                        if(id == undefined || id == 0){
-                            this.error401;
-                        }
-                        /* vado a leggere le informazioni dell'utente mediante id */
-                        api.getUser(id)
-                            .then(result => {
-                                if(result != 0){
-                                    this.user = api.fillUser(result)
-                                } else {
-                                    this.error401;
-                                }
-                            }).catch(() => {
-                                this.error401;
-                            });
-                    })
-                    .catch(() => {
-                        this.error401;
-                    });
-            } else {
-                this.error401;
-            }
-        },
-        methods: {
-            error401: () => {
-                this.$router.push(`/unauthorized`);
-            }
-        }
-    }
+export default {
+  components: {
+    LoggedToolbar,
+    Footer,
+    ProfileMenu,
+  },
+  watch: {
+    title: {
+      immediate: true,
+      handler() {
+        document.title = "Main | " + utils.title;
+      },
+    },
+  },
+  data: () => ({
+    cards: [
+      {
+        title: "Insert lineups",
+        src: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/soccer-ball-sports-stadium-tunnel-allan-swart.jpg",
+        flex: 12,
+        to: "/lineups",
+      },
+      {
+        title: "Build Your Team",
+        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
+        flex: 6,
+        to: "/team",
+      },
+      {
+        title: "Profile Settings",
+        src: "https://durfeelawgroup.com/wp-content/uploads/2014/09/webview.gif",
+        flex: 6,
+        to: "/profile",
+      },
+      {
+        title: "Your Leagues",
+        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
+        flex: 12,
+        to: "/main",
+      },
+    ],
+    user: utils.newUser(),
+    profile: utils.newProfile(),
+  }),
+  beforeMount() {
+    let token = api.readToken("auth");
+    api.loadData(token, this.$router).then((result) => {
+      console.log(result);
+      var error = result.error;
+      if (error == "") {
+        this.user = result.user;
+        this.profile = result.profile;
+      } else {
+        this.$router.push(`/unauthorized`);
+      }
+    });
+  },
+  methods: {},
+};
 </script>

@@ -180,7 +180,7 @@ export const api = {
   },
   //user
   setToken: (name, value) => {
-    Vue.cookie.set(name, value, '60MIN');
+    Vue.cookie.set(name, value, 1);
   },
   //user
   checkUser: handleError(async payload => {

@@ -80,7 +80,7 @@
         </v-card-actions>
       </v-form>
     </v-card>
-    <v-footer color="blue" bottom class="justify-center">
+    <v-footer color="blue" bottom fixed class="justify-center">
       <Footer title="footer" />
     </v-footer>
   </v-main>

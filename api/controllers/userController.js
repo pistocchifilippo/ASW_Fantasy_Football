@@ -194,7 +194,6 @@ exports.update_a_user = (req, res) => {
 };
 
 exports.delete_a_user = (req, res) => {
-  console.log(req.params)
   /* User.deleteOne({ _id: req.params.userId }, err => {
     if (err) res.send(err);
     res.json({
@@ -208,7 +207,6 @@ exports.delete_a_user = (req, res) => {
 /* API for token handling  */
 
 exports.login = async (req, res) => {
-  console.log(req.body);
   await axios
     .post(baseURL + 'login/', { id: req.body.id })
     .then(result => {

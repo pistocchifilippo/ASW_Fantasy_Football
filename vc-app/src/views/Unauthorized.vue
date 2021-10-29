@@ -23,10 +23,16 @@ export default {
     },
   },
   created() {
-    //console.log('bc');
-    //Vue.cookie.remove('auth');
+    console.log(Vue.cookie.get("auth"));
+    Vue.cookie.set("auth", "", 0);
+    this.waitAndRedirect();
   },
-  methods: {},
+  methods: {
+    waitAndRedirect: async function () {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      this.$router.push(`/login`);
+    },
+  },
 };
 /* eliminerei il cookie */
 </script>

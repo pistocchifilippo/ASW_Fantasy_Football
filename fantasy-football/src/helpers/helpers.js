@@ -4,10 +4,10 @@ import VueFlashMessage from 'vue-flash-message';
 import 'vue-flash-message/dist/vue-flash-message.min.css';
 import VueCookie from 'vue-cookie';
 import Token from '@/models/token';
-import { utils } from "../helpers/utils";
+import { utils } from "./utils";
 
 const vm = new Vue();
-const baseURL = 'http://localhost:3000/';
+const userURL = 'http://localhost:3002/';
 const assetURL = 'http://localhost:3001/';
 const ERROR = 0;
 
@@ -32,7 +32,7 @@ const handleError = fn => (...params) =>
   });
 
 async function auth(payload) {
-  const res = await axios.post(baseURL + "users/auth", payload);
+  const res = await axios.post(userURL + "users/auth", payload);
   if (res.data.error == '' && res.data.value.id != '') {
     return res
   }
@@ -89,7 +89,7 @@ async function loadalldata(token) {
 }
 
 async function checktkn(payload) {
-  const res = await axios.post(baseURL + "users/checktkn", payload);
+  const res = await axios.post(userURL + "users/checktkn", payload);
   if (res.data.error == '' && res.data.value.id != '') {
     return res.data.value.id;
   }
@@ -129,7 +129,7 @@ async function getallteams() {
 }
 
 async function getconfig() {
-  const res = await axios.get(baseURL + "config/");
+  const res = await axios.get(userURL + "config/");
   if (res.data.error == '' && res.data.value != '') {
     return res.data.value[0];
   }
@@ -137,7 +137,7 @@ async function getconfig() {
 }
 
 async function getuser(id) {
-  const res = await axios.get(baseURL + "users/" + id);
+  const res = await axios.get(userURL + "users/" + id);
   if (res.data.error == '' && res.data.value != '') {
     return res.data.value;
   }
@@ -145,7 +145,7 @@ async function getuser(id) {
 }
 
 async function getprofile(id) {
-  const res = await axios.get(baseURL + "users/profile/" + id);
+  const res = await axios.get(userURL + "users/profile/" + id);
   if (res.data.error == '' && res.data.value != '') {
     return res.data.value;
   }
@@ -153,12 +153,12 @@ async function getprofile(id) {
 }
 
 async function edituser(user) {
-  const res = await axios.put(baseURL + "users/edit/" + user.id, user);
+  const res = await axios.put(userURL + "users/edit/" + user.id, user);
   return res.data;
 }
 
 async function editprofile(profile) {
-  const res = await axios.put(baseURL + "users/profile/" + profile.id, profile);
+  const res = await axios.put(userURL + "users/profile/" + profile.id, profile);
   return res.data;
 }
 
@@ -184,7 +184,7 @@ export const api = {
   },
   //user
   checkUser: handleError(async payload => {
-    const res = await axios.post(baseURL + "authenticate/", payload)
+    const res = await axios.post(userURL + "authenticate/", payload)
     return res.data;
   }),
   //user
@@ -197,34 +197,34 @@ export const api = {
   editProfile: handleError(async profile => editprofile(profile)),
   //user
   getusers: handleError(async () => {
-    const res = await axios.get(baseURL + "users/");
+    const res = await axios.get(userURL + "users/");
     return res.data;
   }),
   //user
   getuserbyusername: handleError(async username => {
-    const res = await axios.get(baseURL + "users/" + username);
+    const res = await axios.get(userURL + "users/" + username);
     return res.data;
   }),
   //user
   deleteuser: handleError(async id => {
-    const res = await axios.delete(baseURL + "users/" + id);
+    const res = await axios.delete(userURL + "users/" + id);
     return res.data;
   }),
   //user
   createuser: handleError(async payload => {
-    const res = await axios.post(baseURL + "users/", payload);
+    const res = await axios.post(userURL + "users/", payload);
     return res.data;
   }),
   //user
   updateuser: handleError(async payload => {
-    const res = await axios.put(baseURL + "users/" + payload._id, payload);
+    const res = await axios.put(userURL + "users/" + payload._id, payload);
     return res.data;
   }),
   //user
   register: handleError(async payload => {
-    const ret = await axios.post(baseURL + "users/check", payload);
+    const ret = await axios.post(userURL + "users/check", payload);
     if (!ret.data.value) {
-      const register = await axios.post(baseURL + "users/register", payload);
+      const register = await axios.post(userURL + "users/register", payload);
       return register;
     }
     return ret;

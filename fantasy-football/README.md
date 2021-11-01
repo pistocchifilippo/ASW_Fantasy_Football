@@ -1,4 +1,4 @@
-# vc-app
+# fantasy-football
 
 ## Project setup
 ```

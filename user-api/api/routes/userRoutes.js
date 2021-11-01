@@ -2,7 +2,7 @@ const userController = require('../controllers/userController');
 
 module.exports = app => {
 
-  app
+    app
     .route('/users')
     .get(userController.list_all_users)
     .post(userController.create_a_user);
@@ -45,5 +45,6 @@ module.exports = app => {
   app
     .route('/authenticate')
     .post(userController.checkOnLogin);
+
 
 };

@@ -2,9 +2,6 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Users from '@/views/Users.vue';
 import Home from '@/views/Home.vue';
-import New from '@/views/New.vue';
-import Show from '@/views/Show.vue';
-import Edit from '@/views/Edit.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Lineups from '@/views/Lineups.vue';
@@ -65,21 +62,6 @@ export default new Router({
       path: '/lineups',
       name: 'lineups',
       component: Lineups
-    },
-    {
-      path: '/users/new',
-      name: 'new-user',
-      component: New
-    },
-    {
-      path: '/users/:id',
-      name: 'show',
-      component: Show
-    },
-    {
-      path: '/users/:id/edit',
-      name: 'edit',
-      component: Edit
     },
     {
       path: '/unauthorized',

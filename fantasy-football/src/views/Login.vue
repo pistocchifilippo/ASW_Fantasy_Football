@@ -150,8 +150,9 @@ export default {
         /* login -> ottenimento del token */
         let tknUser = new TokenUser(check.value, this.loginUser.password);
         var ret = await api.login(tknUser);
-        if (ret.data.value != "") {
-          this.token = new Token(ret.data.value);
+        console.log(ret.data.value.value);
+        if (ret.data.value.value != "") {
+          this.token = new Token(ret.data.value.value);
           api.setToken("auth", this.token.value);
           /* login -> validazione del token */
           var retval = await api.checkToken(this.token);

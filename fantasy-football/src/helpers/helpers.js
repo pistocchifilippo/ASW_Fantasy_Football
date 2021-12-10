@@ -88,6 +88,30 @@ async function loadalldata(token) {
   }
 }
 
+async function loaduserleagues(profileID){
+  const res = await axios.get(userURL + "leagues/" + profileID);
+  if (res.data.error == '' && res.data.value.id != '') {
+    return res.data.value.id;
+  }
+  return ERROR;
+}
+
+async function loadleagues(){
+  const res = await axios.get(userURL + "leagues");
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
+async function loadparticipant(profileID){
+  const res = await axios.get(userURL + "participant/" + profileID);
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
 async function checktkn(payload) {
   const res = await axios.post(userURL + "users/checktkn", payload);
   if (res.data.error == '' && res.data.value.id != '') {
@@ -249,6 +273,11 @@ export const api = {
   loadData: handleError(async (token) => loaddata(token)),
   //user
   loadAllData: handleError(async (token) => loadalldata(token)),
+  //user
+  loadUserLeagues: handleError(async (token) => loaduserleagues(token)),
+  //user
+  loadLeagues: handleError(async () => loadleagues()),
+  //user
+  loadParticipant: handleError(async (profile) => loadparticipant(profile)),
 }
-
 

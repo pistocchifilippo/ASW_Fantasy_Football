@@ -86,7 +86,7 @@ export default {
         title: "Your Leagues",
         src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
         flex: 12,
-        to: "/main",
+        to: "/leagues",
       },
     ],
     user: utils.newUser(),
@@ -95,7 +95,6 @@ export default {
   beforeMount() {
     let token = api.readToken("auth");
     api.loadData(token, this.$router).then((result) => {
-      console.log(result);
       var error = result.error;
       if (error == "") {
         this.user = result.user;

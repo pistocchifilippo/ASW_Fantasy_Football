@@ -250,6 +250,22 @@ export const utils = {
     }
   },
 
+  getPosition(pos){
+    pos++
+    if (pos == 1) return "1st"
+    else if (pos == 2) return "2nd"
+    else if (pos == 3) return "3rd"
+    else return pos + "th"
+  },
+
+  sortTable(playerA, playerB){
+    if(playerA.score >= playerB.score){
+      return -1;
+    } else {
+      return 1;
+    }
+  },
+
   mapTheFlag(nationality) {
     switch (nationality) {
       case 'Austria':

@@ -3,9 +3,7 @@ var mongoose = require('mongoose');
 const user = require("../models/userModel.js")(mongoose);
 const profile = require("../models/profileModel.js")(mongoose);
 const config = require("../models/configModel.js")(mongoose);
-const team = require("../models/teamModel.js")(mongoose);
-const player = require("../models/playerModel.js")(mongoose);
-
+const league = require("../models/leagueModel.js")(mongoose);
 const axios = require('axios');
 const baseURL = 'http://localhost:3008/';
 const selfURL = 'http://localhost:3002/';
@@ -14,6 +12,14 @@ function Return(value, error) {
   this.value = value;
   this.error = error;
 }
+
+function TableUser(id, username, score){
+  this.username = username;
+  this.score = score;
+  this.id = id;
+}
+
+
 
 exports.list_all_users = (_, res) => {
   user.find({}, (err, users) => {
@@ -105,6 +111,7 @@ exports.read_a_user = (req, res) => {
     if (result == null) {
       ret.value = 0;
       ret.error = 'User not found on database.'
+      res.json(ret);
     }
     else {
       ret.value = result
@@ -115,7 +122,7 @@ exports.read_a_user = (req, res) => {
 
 exports.checkUser = (req, res) => {
   var ret = new Return('', '');
-  user.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }, (err, user) => {
+  User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }, (err, user) => {
     if (err) res.send(err);
     ret.value = 0;
     if (user) {
@@ -185,7 +192,7 @@ exports.register = (req, res) => {
 };
 
 exports.update_a_user = (req, res) => {
-  User.findOneAndUpdate(
+  user.findOneAndUpdate(
     { _id: req.params.userId },
     req.body,
     { new: true },
@@ -195,6 +202,77 @@ exports.update_a_user = (req, res) => {
     }
   );
 };
+
+exports.getLeaguesByUser = (req, res) => {
+  console.log(2)
+  var ret = new Return('', '');
+  league.findOne({ players: req.body.profileID }, (err, leagues) => {
+    if (leagues != undefined) {
+      ret.value = leagues;
+      ret.error = ''
+    } else {
+      ret.error = 'An error has occurred!'
+      ret.value = 0;
+    }
+    res.json(ret);
+  });
+};
+
+exports.getAllLeagues = (_, res) => {
+  var ret = new Return('', '');
+  league.find({}, (err, leagues) => {
+    if (err) res.send(new Return('', 'An error has occurred!'));
+    if (leagues) {
+      ret.value = leagues
+      ret.error = '';
+      res.json(ret);
+    } else {
+      ret.error = 'An error has occurred!'
+      ret.value = 0;
+      res.json(ret);
+    }
+  });
+};
+
+exports.getTableUser = (req, res) => {
+  var ret = new Return('', '');
+  profile.findOne({ _id: req.params.profileID }, (err, profile) => {
+    if (err) res.send(new Return('', 'An error has occurred!'));
+    if (profile) {
+      user.findOne({ _id: profile.userID }, (err, user) => {
+        if (err) res.send(new Return('', 'An error has occurred!'));
+        if (user) {
+          var tuser = new TableUser(user._id.toHexString(), user.username, profile.score);
+          ret.error = '';
+          ret.value = tuser;
+          res.json(ret);
+        } else {
+          ret.error = 'An error has occurred!'
+          ret.value = 0;
+        }
+      });
+      ret.error = '';
+    } else {
+      ret.error = 'An error has occurred!'
+      ret.value = 0;
+      res.json(ret);
+    }
+  });
+};
+
+/* exports.putNewLeague = (req, res) => {
+  var ret = new Return('', '');
+  League.find({}, (err, leagues) => {
+      if (leagues != undefined) {
+          ret.value = leagues;
+          ret.error = ''
+      } else {
+          ret.error = 'Some error occurred!'
+          ret.value = 0;
+      }
+      res.json(ret);
+  });
+}; */
 
 exports.delete_a_user = (req, res) => {
   /* User.deleteOne({ _id: req.params.userId }, err => {
@@ -208,9 +286,6 @@ exports.delete_a_user = (req, res) => {
 
 
 /* API for token handling  */
-
-
-
 
 exports.login = async (req, res) => {
   var ret = new Return(0, '');
@@ -233,7 +308,7 @@ exports.login = async (req, res) => {
         res.json(ret);
       }
     })
-    .catch(err => console.log(err));
+    .catch(err => res.json(err));
 };
 
 exports.checkToken = async (req, res) => {
@@ -242,5 +317,5 @@ exports.checkToken = async (req, res) => {
     .then(result => {
       res.json(result.data);
     })
-    .catch(err => console.log(err));
+    .catch(err => res.json(err));
 };

@@ -2,14 +2,14 @@ const userController = require('../controllers/userController');
 
 module.exports = app => {
 
-    app
+  app
     .route('/users')
     .get(userController.list_all_users)
     .post(userController.create_a_user);
 
   app
     .route('/config')
-    .get(userController.getConfig)
+    .get(userController.getConfig);
 
   app
     .route('/users/check')
@@ -43,8 +43,20 @@ module.exports = app => {
     .delete(userController.delete_a_user);
 
   app
+    .route('/leagues')
+    .get(userController.getAllLeagues);
+  //    .post(userController.putNewLeague)
+
+  app
+  .route('/participant/:profileID')
+  .get(userController.getTableUser);
+
+  app
+    .route('/leagues/:profileID')
+    .get(userController.getLeaguesByUser);
+    
+  app
     .route('/authenticate')
     .post(userController.checkOnLogin);
-
 
 };

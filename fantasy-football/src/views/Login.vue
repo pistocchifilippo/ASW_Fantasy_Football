@@ -146,11 +146,10 @@ export default {
       );
       /* login -> check delle credenziali */
       var check = await api.checkUser(this.loginUser);
-      if (check.value != 0 && check.error == "") {
+      if (check.value != "" && check.error == "") {
         /* login -> ottenimento del token */
         let tknUser = new TokenUser(check.value, this.loginUser.password);
         var ret = await api.login(tknUser);
-        console.log(ret.data.value.value);
         if (ret.data.value.value != "") {
           this.token = new Token(ret.data.value.value);
           api.setToken("auth", this.token.value);

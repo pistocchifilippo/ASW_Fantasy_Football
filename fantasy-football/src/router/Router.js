@@ -10,6 +10,7 @@ import Unauthorized from '@/views/Unauthorized.vue';
 import Main from '@/views/Main.vue';
 import Profile from '@/views/Profile.vue';
 import Team from '@/views/Team.vue';
+import Leagues from '@/views/Leagues.vue';
 
 Vue.use(Router);
 
@@ -62,6 +63,11 @@ export default new Router({
       path: '/lineups',
       name: 'lineups',
       component: Lineups
+    },
+    {
+      path: '/leagues',
+      name: 'leagues',
+      component: Leagues
     },
     {
       path: '/unauthorized',

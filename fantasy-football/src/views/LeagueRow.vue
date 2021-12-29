@@ -1,5 +1,5 @@
 <template>
-  <tbody :key="this.$props.pl.length">
+  <tbody class="striped1" :key="this.$props.pl.length">
     <tr v-for="(player, index) in this.players" :key="player.id">
       <td>{{ player.username }}</td>
       <td>{{ player.score }}</td>

@@ -16,6 +16,10 @@ module.exports = app => {
     .post(userController.checkUser);
 
   app
+    .route('/users/username/:profileID')
+    .get(userController.getUsername);
+
+  app
     .route('/users/profile/:id')
     .get(userController.getProfile)
     .put(userController.editProfile);
@@ -44,17 +48,25 @@ module.exports = app => {
 
   app
     .route('/leagues')
-    .get(userController.getAllLeagues);
-  //    .post(userController.putNewLeague)
+    .get(userController.getAllLeagues)
+    .post(userController.postNewLeague);
 
   app
-  .route('/participant/:profileID')
-  .get(userController.getTableUser);
+    .route('/leagues/join')
+    .post(userController.joinLeague);
+
+  app
+    .route('/search/:key')
+    .get(userController.getSearchResult);
+
+  app
+    .route('/participant/:profileID')
+    .get(userController.getTableUser);
 
   app
     .route('/leagues/:profileID')
     .get(userController.getLeaguesByUser);
-    
+
   app
     .route('/authenticate')
     .post(userController.checkOnLogin);

@@ -88,7 +88,6 @@ export default {
   methods: {
     search() {
       this.sBar = !this.sBar;
-      console.log("search");
     },
     getPlayer(id) {
       let player = this.players.filter((p) => p._id == id)[0];
@@ -125,17 +124,6 @@ export default {
         utils.purchase_not(this, player, "success");
       } else {
         utils.failure_purchase(this, "error");
-      }
-    },
-    insert(text) {
-      if (text == "") {
-        console.log("empty!", text);
-      } else {
-        console.log("typing....", text);
-        this.temp = this.user_team;
-        this.user_team = this.user_team.filter((player) =>
-          player.name.toUpperCase().includes(text.toUpperCase())
-        );
       }
     },
     sell(player) {

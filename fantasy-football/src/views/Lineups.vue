@@ -37,6 +37,9 @@
           />
         </v-col>
       </v-row>
+      <br/>
+      <hr class="blue"/>
+      <br/>
       <v-row class="ma-0">
         <v-card
           v-if="this.lineup.length > 0"
@@ -195,7 +198,6 @@ export default {
       api
         .getPhoto(player.name)
         .then((result) => {
-          console.log(result.player[0].strThumb);
           return result.player[0].strThumb;
         })
         .catch(() => {});
@@ -236,8 +238,6 @@ export default {
     },
     remove(player) {
       this.lineup = this.lineup.filter((p) => p._id != player._id);
-      console.log(this.lineup.length);
-      console.log("removed", player);
     },
     update(squad) {
       this.lineup = squad.sort((a, b) =>

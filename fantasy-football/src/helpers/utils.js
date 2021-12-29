@@ -1,5 +1,6 @@
 import md5 from 'js-md5'
 import User from '@/models/user';
+import League from '@/models/league';
 import Config from '@/models/config';
 import Profile from '@/models/profile';
 
@@ -14,6 +15,23 @@ export const utils = {
     payload.password = md5(payload.password);
     return payload;
   }),
+
+  join_not(obj, league, type) {
+    obj.$notify({
+      type: type,
+      group: "notify",
+      title: "You joined " + league + "!"
+    });
+  },
+
+  join_err(obj, league, type) {
+    obj.$notify({
+      type: type,
+      group: "notify",
+      title: "Impossible to join " + league + "!",
+      text: "Try again later",
+    });
+  },
 
   sell_not(obj, player, type) {
     obj.$notify({
@@ -147,6 +165,10 @@ export const utils = {
   fillConfig: (config) => { return new Config(config._id, config.initialBudget, config.initialScore, config.matchDay, config.modules); },
 
   buildConfig(id, initialBudget, initialScore, matchday, modules) { return new Profile(id, initialBudget, initialScore, matchday, modules) },
+
+  newLeague: () => { return new League('', '', Array(), '', 0); },
+
+  fillLeague: (league) => { return new League(league._id, league.participants, league.name, league.admin, league.max_players); },
 
   mapTheRole(position) {
     switch (position) {

@@ -88,15 +88,15 @@ async function loadalldata(token) {
   }
 }
 
-async function loaduserleagues(profileID){
+async function loaduserleagues(profileID) {
   const res = await axios.get(userURL + "leagues/" + profileID);
-  if (res.data.error == '' && res.data.value.id != '') {
-    return res.data.value.id;
+  if (res.data.error == '') {
+    return res.data.value;
   }
   return ERROR;
 }
 
-async function loadleagues(){
+async function loadleagues() {
   const res = await axios.get(userURL + "leagues");
   if (res.data.error == '' && res.data.value != '') {
     return res.data.value;
@@ -104,8 +104,43 @@ async function loadleagues(){
   return ERROR;
 }
 
-async function loadparticipant(profileID){
+async function getsearchresult(key) {
+  const res = await axios.get(userURL + "search/" + key);
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
+async function joinleague(profileID, leagueID) {
+  var parameters = [];
+  parameters.push(profileID);
+  parameters.push(leagueID);
+  const res = await axios.post(userURL + "leagues/join", parameters);
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
+async function getusername(profileID) {
+  const res = await axios.get(userURL + "users/username/" + profileID);
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
+async function loadparticipant(profileID) {
   const res = await axios.get(userURL + "participant/" + profileID);
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
+async function newleague(league) {
+  const res = await axios.post(userURL + "leagues", league);
   if (res.data.error == '' && res.data.value != '') {
     return res.data.value;
   }
@@ -207,6 +242,10 @@ export const api = {
     Vue.cookie.set(name, value, 1);
   },
   //user
+  removeToken: (name) => {
+    Vue.cookie.delete(name)
+  },
+  //user
   checkUser: handleError(async payload => {
     const res = await axios.post(userURL + "authenticate/", payload)
     return res.data;
@@ -274,10 +313,17 @@ export const api = {
   //user
   loadAllData: handleError(async (token) => loadalldata(token)),
   //user
-  loadUserLeagues: handleError(async (token) => loaduserleagues(token)),
+  loadUserLeagues: handleError(async (profileID) => loaduserleagues(profileID)),
   //user
   loadLeagues: handleError(async () => loadleagues()),
   //user
   loadParticipant: handleError(async (profile) => loadparticipant(profile)),
+  //user
+  newLeague: handleError(async (league) => newleague(league)),
+  //user
+  getSearchResult: handleError(async (key) => getsearchresult(key)),
+  //user
+  getUsername: handleError(async (profileID) => getusername(profileID)),
+  //user
+  joinLeague: handleError(async (profileID, leagueID) => joinleague(profileID, leagueID)),
 }
-

@@ -76,10 +76,6 @@ export default {
     this.btn = this.$props.buttons;
   },
   methods: {
-    search() {
-      this.sBar = !this.sBar;
-      console.log("search");
-    },
     getPlayer(id) {
       let player = this.allPlayers.filter((p) => p._id == id)[0];
       return player;

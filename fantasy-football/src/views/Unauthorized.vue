@@ -23,7 +23,6 @@ export default {
     },
   },
   created() {
-    console.log(Vue.cookie.get("auth"));
     Vue.cookie.set("auth", "", 0);
     this.waitAndRedirect();
   },

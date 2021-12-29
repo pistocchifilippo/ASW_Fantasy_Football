@@ -4,7 +4,9 @@ const user = require("../models/userModel.js")(mongoose);
 const profile = require("../models/profileModel.js")(mongoose);
 const config = require("../models/configModel.js")(mongoose);
 const league = require("../models/leagueModel.js")(mongoose);
+
 const axios = require('axios');
+const leagueModel = require('../models/leagueModel.js');
 const baseURL = 'http://localhost:3008/';
 const selfURL = 'http://localhost:3002/';
 
@@ -13,13 +15,27 @@ function Return(value, error) {
   this.error = error;
 }
 
-function TableUser(id, username, score){
+function TableUser(id, username, score) {
   this.username = username;
   this.score = score;
   this.id = id;
 }
 
-
+function Profile(userid, initialBudget, initialScore) {
+  this.userID = userid;
+  this.budget = initialBudget;
+  this.score = initialScore;
+  this.team = [];
+  this.lineups = [
+    Array(11),
+    Array(11),
+    Array(11),
+    Array(11),
+    Array(11),
+    Array(11),
+    Array(11),
+  ];
+}
 
 exports.list_all_users = (_, res) => {
   user.find({}, (err, users) => {
@@ -54,8 +70,8 @@ exports.editProfile = (req, res) => {
     (err, profile) => {
       if (err) res.send(err);
       if (profile == undefined) {
-        et.value = 0;
-        req.error = 'Failed to upload your data, try again later!';
+        ret.value = 0;
+        ret.error = 'Failed to upload your data, try again later!';
       }
       res.json(ret);
     }
@@ -78,16 +94,23 @@ exports.getConfig = (req, res) => {
 
 exports.getProfile = (req, res) => {
   var ret = new Return('', '');
-  profile.findOne({ userID: req.params.id }, (err, prof) => {
-    if (prof != undefined) {
-      ret.value = prof;
-      ret.error = ''
-    } else {
-      ret.error = 'The credentials you provided are incorrect!'
-      ret.value = 0;
-    }
+  if (req.params.id == 0) {
+    ret.error = 'Try again: we had some issues';
+    ret.value = 0;
     res.json(ret);
-  });
+  } else {
+    profile.findOne({ userID: req.params.id }, (err, prof) => {
+      if (prof != undefined) {
+        ret.value = prof;
+        ret.error = ''
+        res.json(ret);
+      } else {
+        ret.error = 'The credentials you provided are incorrect!'
+        ret.value = 0;
+        res.json(ret);
+      }
+    });
+  }
 };
 
 exports.checkOnLogin = (req, res) => {
@@ -107,22 +130,20 @@ exports.checkOnLogin = (req, res) => {
 exports.read_a_user = (req, res) => {
   var ret = new Return(0, '');
   user.findOne({ _id: req.params.userId }, function (err, result) {
-    if (err) res.send(err);
+    if (err) { ret.error = err }
     if (result == null) {
       ret.value = 0;
       ret.error = 'User not found on database.'
-      res.json(ret);
-    }
-    else {
+    } else {
       ret.value = result
-      res.json(ret);
     }
+    res.json(ret);
   });
 };
 
 exports.checkUser = (req, res) => {
   var ret = new Return('', '');
-  User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }, (err, user) => {
+  user.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }, (err, user) => {
     if (err) res.send(err);
     ret.value = 0;
     if (user) {
@@ -141,21 +162,6 @@ exports.create_a_user = (req, res) => {
   });
 };
 
-function Profile(userid, initialBudget, initialScore) {
-  this.userID = userid;
-  this.budget = initialBudget;
-  this.score = initialScore;
-  this.team = [];
-  this.lineups = [
-    Array(11),
-    Array(11),
-    Array(11),
-    Array(11),
-    Array(11),
-    Array(11),
-    Array(11),
-  ];
-}
 
 exports.register = (req, res) => {
   var ret = new Return(1, '');
@@ -204,12 +210,57 @@ exports.update_a_user = (req, res) => {
 };
 
 exports.getLeaguesByUser = (req, res) => {
-  console.log(2)
-  var ret = new Return('', '');
-  league.findOne({ players: req.body.profileID }, (err, leagues) => {
+  var pid = req.params.profileID;
+  var ret = new Return([], '');
+  league.find({}, (err, leagues) => {
     if (leagues != undefined) {
-      ret.value = leagues;
+      leagues.forEach(league => {
+        if (league.players.includes(pid)) {
+          ret.value.push(league);
+        }
+      });
       ret.error = ''
+    } else {
+      ret.error = 'An error has occurred!'
+      ret.value = 0;
+    }
+    res.json(ret);
+  });
+};
+
+exports.getUsername = (req, res) => {
+  var ret = new Return('', '');
+  var query = profile.findOne({ _id: req.params.profileID }).select('userID');
+  query.exec(function (err, profile) {
+    if (profile != undefined) {
+      var query2 = user.findOne({ _id: profile.userID }).select('username');
+      query2.exec(function (err, user) {
+        if (user != undefined) {
+          ret.value = user.username;
+          ret.error = ''
+        } else {
+          ret.error = 'An error has occurred!'
+          ret.value = 0;
+        }
+        res.json(ret);
+      }
+      );
+    } else {
+      ret.error = 'An error has occurred!'
+      ret.value = 0;
+    }
+  });
+}
+
+exports.getSearchResult = (req, res) => {
+  var ret = new Return('', '');
+  var query = league
+    .find({ name: { $regex: req.params.key } })
+    .select('name admin _id players');
+  query.exec(function (err, result) {
+    if (result != undefined) {
+      ret.value = result;
+      ret.error = '';
     } else {
       ret.error = 'An error has occurred!'
       ret.value = 0;
@@ -225,12 +276,11 @@ exports.getAllLeagues = (_, res) => {
     if (leagues) {
       ret.value = leagues
       ret.error = '';
-      res.json(ret);
     } else {
       ret.error = 'An error has occurred!'
       ret.value = 0;
-      res.json(ret);
     }
+    res.json(ret);
   });
 };
 
@@ -260,22 +310,60 @@ exports.getTableUser = (req, res) => {
   });
 };
 
-/* exports.putNewLeague = (req, res) => {
+exports.joinLeague = (req, res) => {
   var ret = new Return('', '');
-  League.find({}, (err, leagues) => {
-      if (leagues != undefined) {
-          ret.value = leagues;
-          ret.error = ''
-      } else {
-          ret.error = 'Some error occurred!'
+  var profileid = req.body[0];
+  var leagueid = req.body[1];
+  league.findOne({ _id: leagueid }, (err, l) => {
+    if (l) {
+      if (!l.players.length == l.max_players) {
+        if (!l.players.includes(profileid)) {
+          l.players.push(profileid);
+          league.findOneAndUpdate(
+            { _id: leagueid },
+            l,
+            { new: true },
+            (err, lg) => {
+              if (lg) {
+                ret.value = lg;
+                ret.error = '';
+              } else {
+                ret.value = 0;
+                req.error = 'Failed to upload your data, try again later!';
+              }
+            }
+          );
+        } else {
           ret.value = 0;
+          req.error = 'You are already a member of ' + l.name + '!';
+        }
+      } else {
+        ret.value = 0;
+        req.error = 'This league is already full!';
       }
       res.json(ret);
+    }
   });
-}; */
+};
+
+exports.postNewLeague = (req, res) => {
+  const newLeague = new league(req.body);
+  var ret = new Return('', '');
+  newLeague.save((err, league) => {
+    if (err) {
+      ret.error = 'An error has occurred!'
+      ret.value = 0;
+      res.json(ret);
+    } else {
+      ret.value = 1;
+      ret.error = '';
+      res.json(ret);
+    }
+  });
+};
 
 exports.delete_a_user = (req, res) => {
-  /* User.deleteOne({ _id: req.params.userId }, err => {
+  /* user.deleteOne({ _id: req.params.userId }, err => {
     if (err) res.send(err);
     res.json({
       message: 'user successfully deleted',
@@ -297,18 +385,17 @@ exports.login = async (req, res) => {
           .post(baseURL + 'login/', { id: req.body.id })
           .then(result => {
             ret.value = result.data;
-            res.json(ret);
           })
-          .catch(err => {
-            ret.error = 'An error has occurred!';
-            res.json(ret);
-          });
+        /* .catch(err => {
+          ret.error = 'An error has occurred!';
+          res.json(ret);
+        }); */
       } else {
         ret.error = 'An error has occurred!';
-        res.json(ret);
       }
     })
-    .catch(err => res.json(err));
+    .catch(/* err => res.json(err) */);
+  res.json(ret);
 };
 
 exports.checkToken = async (req, res) => {
@@ -317,5 +404,5 @@ exports.checkToken = async (req, res) => {
     .then(result => {
       res.json(result.data);
     })
-    .catch(err => res.json(err));
+    .catch(/* err => res.json(err) */);
 };

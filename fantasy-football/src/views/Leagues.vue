@@ -1,44 +1,59 @@
 <template>
   <v-main>
     <LoggedToolbar v-if="this.user.id" :userid="this.user.id" />
-    <v-container>
-      <ProfileMenu
-        v-if="this.user.id"
-        :username="this.user.username"
-        :budget="this.profile.budget"
-        :score="this.profile.score"
-      />
+    <v-container class="back fill">
+      <v-container>
+        <ProfileMenu
+          v-if="this.user.id"
+          :username="this.user.username"
+          :budget="this.profile.budget"
+          :score="this.profile.score"
+        />
+      </v-container>
+      <hr class="blue" />
+      <br />
+      <v-container>
+        <NewLeagueModal
+          v-if="this.profile.id"
+          :profileID="this.profile.id"
+          class="half"
+        />
+        <br />
+        <SearchLeagueModal
+          v-if="this.profile.id"
+          :profileID="this.profile.id"
+          class="half"
+        />
+      </v-container>
+      <br />
+      <v-container fluid grid-list-md>
+        <v-layout wrap>
+          <v-flex
+            justify-content-around
+            v-for="league in this.leagues"
+            :key="league._id"
+          >
+            <v-card class="desktop-lcard" dense fixed-header>
+              <InfoCard
+                class="fill"
+                color="blue"
+                :text="league.name.toUpperCase()"
+              />
+              <v-simple-table class="five-rows scroll" dense fixed-header>
+                <thead>
+                  <tr>
+                    <th class="text-left">Player</th>
+                    <th class="text-left">Points</th>
+                    <th class="text-left">Position</th>
+                  </tr>
+                </thead>
+                <LeagueRow :pl="league.players" />
+              </v-simple-table>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
     </v-container>
-    <hr />
-    <br />
-    <v-container fluid grid-list-md>
-      <v-layout row wrap>
-        <v-flex 
-          justify-content-around
-          v-for="league in this.leagues"
-          :key="league._id"
-        >
-          <v-card class="mx-auto" dense fixed-header>
-            <InfoCard
-              class="fill"
-              color="blue"
-              :text="league.name.toUpperCase()"
-            />
-            <v-simple-table dense fixed-header>
-              <thead>
-                <tr>
-                  <th class="text-left">Player</th>
-                  <th class="text-left">Points</th>
-                  <th class="text-left">Position</th>
-                </tr>
-              </thead>
-              <LeagueRow :pl="league.participants" />
-            </v-simple-table>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-
     <v-footer color="blue" bottom class="justify-center">
       <Footer title="footer" />
     </v-footer>
@@ -55,6 +70,8 @@ import LoggedToolbar from "@/views/LoggedToolbar.vue";
 import InfoCard from "@/views/InfoCard.vue";
 import Footer from "@/views/Footer.vue";
 import LeagueRow from "@/views/LeagueRow.vue";
+import NewLeagueModal from "@/views/NewLeagueModal.vue";
+import SearchLeagueModal from "@/views/SearchLeagueModal.vue";
 
 export default {
   components: {
@@ -63,6 +80,8 @@ export default {
     ProfileMenu,
     LeagueRow,
     InfoCard,
+    SearchLeagueModal,
+    NewLeagueModal,
   },
   watch: {
     title: {
@@ -73,6 +92,7 @@ export default {
     },
   },
   data: () => ({
+    dialog: false,
     errore: "",
     leagues: [],
     user: utils.newUser(),
@@ -87,6 +107,19 @@ export default {
         this.profile = result.profile;
         this.prov_budget = this.profile.budget;
         this.config = result.config;
+        api.loadUserLeagues(this.profile.id).then((res) => {
+          res.forEach((league) => {
+            this.leagues.push(
+              new League(
+                league._id,
+                league.name,
+                league.players,
+                league.admin,
+                league.max_players
+              )
+            );
+          });
+        });
       } else {
         this.$router.push(`/unauthorized`);
       }
@@ -94,25 +127,11 @@ export default {
   },
   created() {
     this.errore = "";
-    api.loadLeagues().then((res) => {
-      res.forEach((league) => {
-        console.log(league);
-        this.leagues.push(
-          new League(
-            league._id,
-            league.name,
-            league.players,
-            league.admin,
-            league.max_players
-          )
-        );
-      });
-      /* this.leagues.shift().players.forEach((player) => {
-        api.loadParticipant(player).then((res) => {
-          console.log(res);
-        });
-      }); */
-    });
+  },
+  methods: {
+    close() {
+      this.dialog = false;
+    },
   },
 };
 </script>

@@ -30,6 +30,10 @@
           <v-list-item-title>{{ this.user.username }}</v-list-item-title
           ><v-icon right color="blue">mdi-cog-outline</v-icon>
         </v-list-item>
+        <v-list-item @click="logout()">
+          <v-list-item-title>Logout</v-list-item-title
+          ><v-icon right color="blue">mdi-cog-outline</v-icon>
+        </v-list-item>
       </v-list>
     </v-menu>
     <router-link class="nav-link pr-3 mobile-nav toolbar-element" to="/profile">
@@ -50,6 +54,12 @@
         <v-icon right color="white">mdi-home</v-icon>
       </v-btn>
     </router-link>
+    <div right class="nav-link pr-3 mobile-nav toolbar-element">
+      <v-btn text @click="logout()" rounded color="white"
+        >LOGOUT
+        <v-icon right color="white">mdi-home</v-icon>
+      </v-btn>
+    </div>
   </v-toolbar>
 </template>
 
@@ -76,6 +86,13 @@ export default {
       .catch(() => {
         this.$router.push(`/unauthorized`);
       });
+  },
+  methods: {
+    logout: async function () {
+      api.removeToken("auth");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      this.$router.push(`/login`);
+    },
   },
 };
 </script>

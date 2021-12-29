@@ -153,7 +153,6 @@ export default {
   beforeMount() {
     let token = api.readToken("auth");
     api.loadData(token, this.$router).then((result) => {
-      console.log(result);
       var error = result.error;
       if (error == "") {
         this.user = result.user;

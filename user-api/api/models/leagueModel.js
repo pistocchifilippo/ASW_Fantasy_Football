@@ -5,7 +5,6 @@ module.exports = function (mongoose) {
     max_players: Number,
     players: Array,
     admin: String,
-    _id: String,
   });
   return mongoose.model('leaguemodel', LeagueSchema, 'Leagues');
 };

@@ -88,6 +88,12 @@ export default {
         flex: 12,
         to: "/leagues",
       },
+      {
+        title: "Stats",
+        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
+        flex: 12,
+        to: "/stats",
+      },
     ],
     user: utils.newUser(),
     profile: utils.newProfile(),

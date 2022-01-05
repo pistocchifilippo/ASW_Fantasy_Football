@@ -1,21 +1,24 @@
 <template >
   <v-container class="back2 pt-0 rounded px-0">
-    <v-card-title class="px-0 blue justify-center infocard">
-      {{ "Search and Join a League".toUpperCase() }}
+    <v-card-title class="px-0 blue fill justify-center infocard">
+    SEARCH AND JOIN A LEAGUE 
+    <v-icon @click="close()" right color="red">mdi-close</v-icon>
     </v-card-title>
-
     <v-card class="mx-auto transparent" tile>
       <v-container class="searchbar">
         <v-text-field
           label="Search"
           v-model="searchKey"
           single-line
-          class="my-1 mx-auto px-4 pt-2 fill white rounded"
+          class="mx-auto px-4 pt-2 fill white rounded"
           style="font-family: Guardian Headline"
+          :append-icon="'mdi-magnify'"
+          @click:append="search()"
         />
-        <v-btn class="my-auto px-4 fill white blue--text" @click="search()">
+        />
+        <!--         <v-btn class="my-auto px-4 fill white blue--text" @click="search()">
           Search
-        </v-btn>
+        </v-btn> -->
       </v-container>
       <v-simple-table
         style="overflow-y: scroll"
@@ -30,13 +33,17 @@
             <th class="text-left"></th>
           </tr>
         </thead>
-        <SearchRow v-if="loaded && this.$props.pid" :pid="this.$props.pid" :pl="this.leagues" />
+        <SearchRow
+          v-if="loaded && this.$props.pid"
+          :pid="this.$props.pid"
+          :pl="this.leagues"
+        />
       </v-simple-table>
-      <v-container class="searchbar mx">
+<!--       <v-container class="searchbar mx">
         <v-btn class="my-auto px-4 fill white red--text" @click="close()">
           Close
-        </v-btn>
-      </v-container>
+        </v-btn> 
+      </v-container> -->
     </v-card>
   </v-container>
 </template>

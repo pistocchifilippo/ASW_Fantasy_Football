@@ -5,6 +5,7 @@ import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Lineups from '@/views/Lineups.vue';
+import Stats from '@/views/Stats.vue';
 import NotFound from '@/views/404.vue';
 import Unauthorized from '@/views/Unauthorized.vue';
 import Main from '@/views/Main.vue';
@@ -68,6 +69,11 @@ export default new Router({
       path: '/leagues',
       name: 'leagues',
       component: Leagues
+    },
+    {
+      path: '/stats',
+      name: 'stats',
+      component: Stats
     },
     {
       path: '/unauthorized',

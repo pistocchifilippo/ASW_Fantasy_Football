@@ -32,7 +32,7 @@
         </v-list-item>
         <v-list-item @click="logout()">
           <v-list-item-title>Logout</v-list-item-title
-          ><v-icon right color="blue">mdi-cog-outline</v-icon>
+          ><v-icon right color="blue">mdi-logout-variant</v-icon>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -57,7 +57,7 @@
     <div right class="nav-link pr-3 mobile-nav toolbar-element">
       <v-btn text @click="logout()" rounded color="white"
         >LOGOUT
-        <v-icon right color="white">mdi-home</v-icon>
+        <v-icon right color="white">mdi-logout-variant</v-icon>
       </v-btn>
     </div>
   </v-toolbar>

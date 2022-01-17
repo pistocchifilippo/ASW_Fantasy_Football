@@ -1,17 +1,18 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Users from '@/views/Users.vue';
-import Home from '@/views/Home.vue';
-import Login from '@/views/Login.vue';
-import Register from '@/views/Register.vue';
-import Lineups from '@/views/Lineups.vue';
-import Stats from '@/views/Stats.vue';
-import NotFound from '@/views/404.vue';
-import Unauthorized from '@/views/Unauthorized.vue';
-import Main from '@/views/Main.vue';
-import Profile from '@/views/Profile.vue';
-import Team from '@/views/Team.vue';
-import Leagues from '@/views/Leagues.vue';
+import Home from '@/views/landing/Home.vue';
+import Login from '@/views/access/Login.vue';
+import Register from '@/views/access/Register.vue';
+import Lineups from '@/views/lineup/Lineups.vue';
+import Stats from '@/views/stats/Stats.vue';
+import NotFound from '@/views/error/404.vue';
+import Unauthorized from '@/views/error/Unauthorized.vue';
+import Main from '@/views/landing/Main.vue';
+import Profile from '@/views/user/Profile.vue';
+import Team from '@/views/user/Team.vue';
+import Leagues from '@/views/leagues/Leagues.vue';
+import AdminLogin from '@/views/admin/AdminLogin.vue';
+import AdminPage from '@/views/admin/AdminPage.vue';
 
 Vue.use(Router);
 
@@ -26,9 +27,14 @@ export default new Router({
       component: Home
     },
     {
-      path: '/users',
-      name: 'users',
-      component: Users
+      path: '/private/main',
+      name: 'adminPage',
+      component: AdminPage
+    },
+    {
+      path: '/private/login',
+      name: 'adminLogin',
+      component: AdminLogin
     },
     {
       path: '/profile',
@@ -79,7 +85,7 @@ export default new Router({
       path: '/unauthorized',
       name: 'unauthorized',
       component: Unauthorized
-    }, 
+    },
     {
       path: '*',
       name: '404',

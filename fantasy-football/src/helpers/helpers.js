@@ -2,8 +2,6 @@ import axios from 'axios';
 import Vue from 'vue';
 import VueFlashMessage from 'vue-flash-message';
 import 'vue-flash-message/dist/vue-flash-message.min.css';
-import VueCookie from 'vue-cookie';
-import Token from '@/models/token';
 import { utils } from "./utils";
 
 const vm = new Vue();
@@ -11,8 +9,7 @@ const userURL = 'http://localhost:3002/';
 const assetURL = 'http://localhost:3001/';
 const ERROR = 0;
 
-Vue.use(VueCookie,
-  VueFlashMessage, {
+Vue.use(VueFlashMessage, {
   messageOptions: {
     timeout: 3000,
     pauseOnInteract: true
@@ -31,10 +28,87 @@ const handleError = fn => (...params) =>
     vm.flash(`${error.response}: ${error.data}`, 'error');
   });
 
+export const api = {
+  //user
+  checkUser: handleError(async payload => checkuser(payload)),
+  //user
+  checkAdmin: handleError(async payload => checkadmin(payload)),
+  //user
+  getUser: handleError(async id => getuser(id)),
+  //user
+  getProfile: handleError(async id => getprofile(id)),
+  //user
+  editUser: handleError(async user => edituser(user)),
+  //user
+  editProfile: handleError(async profile => editprofile(profile)),
+  //user
+  getUsers: handleError(async () => getusers()),
+  //user
+  getUserByUsername: handleError(async username => getuserbyusername(username)),
+  //user
+  deleteUser: handleError(async id => deleteuser(id)),
+  //user
+  createUser: handleError(async payload => createuser(payload)),
+  //user
+  updateUser: handleError(async payload => updateuser(payload)),
+  //user
+  register: handleError(async payload => registeruser(payload)),
+  //user
+  login: handleError(async payload => auth(payload)),
+  //user
+  adminLogin: handleError(async payload => adminAuth(payload)),
+  //user
+  checkToken: handleError(async payload => checktkn(payload)),
+  //user
+  loadData: handleError(async (token) => loaddata(token)),
+  //user
+  loadAllData: handleError(async (token) => loadalldata(token)),
+  //user
+  loadUserLeagues: handleError(async (profileID) => loaduserleagues(profileID)),
+  //user
+  loadLeagues: handleError(async () => loadleagues()),
+  //user
+  loadParticipant: handleError(async (profile) => loadparticipant(profile)),
+  //user
+  newLeague: handleError(async (league) => newleague(league)),
+  //user
+  getSearchResult: handleError(async (key) => getsearchresult(key)),
+  //user
+  getUsername: handleError(async (profileID) => getusername(profileID)),
+  //user
+  joinLeague: handleError(async (profileID, leagueID) => joinleague(profileID, leagueID)),
+  //user
+  getCurrentMatchday: handleError(async () => getcurrentmatchday()),
+  //user
+  advanceMatchday: handleError(async () => advanceMD()),
+  //asset
+  getPlayer: handleError(async id => getplayer(id)),
+  //asset
+  getPlayers: handleError(async teamID => getplayers(teamID)),
+  //asset
+  getTeam: handleError(async teamID => getteam(teamID)),
+  //asset
+  getAllPlayers: handleError(async () => getallplayers()),
+  //asset
+  getAllTeams: handleError(async () => getallteams()),
+  //asset
+  getPhoto: handleError(async name => getphoto(name)),
+  //asset
+  getConfig: handleError(async () => getconfig()),
+}
+
 async function auth(payload) {
   const res = await axios.post(userURL + "users/auth", payload);
   if (res.data.error == '' && res.data.value.id != '') {
     return res
+  }
+  return ERROR;
+}
+
+async function adminAuth(payload) {
+  const res = await axios.post(userURL + "private/auth", payload);
+  if (res.data.error == '' && res.data.value.id != '') {
+    return res;
   }
   return ERROR;
 }
@@ -158,7 +232,7 @@ async function checktkn(payload) {
 async function getplayer(id) {
   const res = await axios.get(assetURL + "players/" + id);
   if (res.data.error == '' && res.data.value.id != '') {
-    return res.data.value.id;
+    return res.data.value;
   }
   return ERROR;
 }
@@ -179,6 +253,14 @@ async function getallplayers() {
   return ERROR;
 }
 
+async function getteam(teamID) {
+  const res = await axios.get(assetURL + "teams/" + teamID);
+  if (res.data.error == '' && res.data.value != '') {
+    return res.data.value;
+  }
+  return ERROR;
+}
+
 async function getallteams() {
   const res = await axios.get(assetURL + "teams/");
   if (res.data.error == '' && res.data.value != '') {
@@ -190,7 +272,7 @@ async function getallteams() {
 async function getconfig() {
   const res = await axios.get(userURL + "config/");
   if (res.data.error == '' && res.data.value != '') {
-    return res.data.value[0];
+    return res.data.value;
   }
   return ERROR;
 }
@@ -232,98 +314,64 @@ async function getphoto(name) {
   return res.data;
 }
 
-export const api = {
-  //user
-  readToken: name => {
-    return new Token(Vue.cookie.get(name));
-  },
-  //user
-  setToken: (name, value) => {
-    Vue.cookie.set(name, value, 1);
-  },
-  //user
-  removeToken: (name) => {
-    Vue.cookie.delete(name)
-  },
-  //user
-  checkUser: handleError(async payload => {
-    const res = await axios.post(userURL + "authenticate/", payload)
-    return res.data;
-  }),
-  //user
-  getUser: handleError(async id => getuser(id)),
-  //user
-  getProfile: handleError(async id => getprofile(id)),
-  //user
-  editUser: handleError(async user => edituser(user)),
-  //user
-  editProfile: handleError(async profile => editprofile(profile)),
-  //user
-  getusers: handleError(async () => {
-    const res = await axios.get(userURL + "users/");
-    return res.data;
-  }),
-  //user
-  getuserbyusername: handleError(async username => {
-    const res = await axios.get(userURL + "users/" + username);
-    return res.data;
-  }),
-  //user
-  deleteuser: handleError(async id => {
-    const res = await axios.delete(userURL + "users/" + id);
-    return res.data;
-  }),
-  //user
-  createuser: handleError(async payload => {
-    const res = await axios.post(userURL + "users/", payload);
-    return res.data;
-  }),
-  //user
-  updateuser: handleError(async payload => {
-    const res = await axios.put(userURL + "users/" + payload._id, payload);
-    return res.data;
-  }),
-  //user
-  register: handleError(async payload => {
-    const ret = await axios.post(userURL + "users/check", payload);
-    if (!ret.data.value) {
-      const register = await axios.post(userURL + "users/register", payload);
-      return register;
-    }
-    return ret;
-  }),
-  //user
-  login: handleError(async payload => auth(payload)),
-  //user
-  checkToken: handleError(async payload => checktkn(payload)),
-  //asset
-  getPlayer: handleError(async id => getplayer(id)),
-  //asset
-  getPlayers: handleError(async teamID => getplayers(teamID)),
-  //asset
-  getAllPlayers: handleError(async () => getallplayers()),
-  //asset
-  getAllTeams: handleError(async () => getallteams()),
-  //asset
-  getPhoto: handleError(async name => getphoto(name)),
-  //asset
-  getConfig: handleError(async () => getconfig()),
-  //user
-  loadData: handleError(async (token) => loaddata(token)),
-  //user
-  loadAllData: handleError(async (token) => loadalldata(token)),
-  //user
-  loadUserLeagues: handleError(async (profileID) => loaduserleagues(profileID)),
-  //user
-  loadLeagues: handleError(async () => loadleagues()),
-  //user
-  loadParticipant: handleError(async (profile) => loadparticipant(profile)),
-  //user
-  newLeague: handleError(async (league) => newleague(league)),
-  //user
-  getSearchResult: handleError(async (key) => getsearchresult(key)),
-  //user
-  getUsername: handleError(async (profileID) => getusername(profileID)),
-  //user
-  joinLeague: handleError(async (profileID, leagueID) => joinleague(profileID, leagueID)),
+async function advanceMD() {
+  const bool = await canAdvance();
+  if (bool) {
+    await axios.post(userURL + "config/advance");
+  }
 }
+
+async function getcurrentmatchday() {
+  const res = await axios.get(userURL + "config/day")
+  return res.data;
+}
+
+async function canAdvance() {
+  const res = await axios.get(userURL + "config/advance")
+  return res.data;
+}
+
+async function checkuser(payload) {
+  const res = await axios.post(userURL + "authenticate/", payload)
+  return res.data;
+}
+
+async function checkadmin(admin) {
+  const res = await axios.post(userURL + "private/authenticate/", admin);
+  return res.data;
+}
+
+async function getusers() {
+  const res = await axios.get(userURL + "users/");
+  return res.data;
+}
+
+async function getuserbyusername(username) {
+  const res = await axios.get(userURL + "users/" + username);
+  return res.data;
+}
+
+async function deleteuser(id) {
+  const res = await axios.delete(userURL + "users/" + id);
+  return res.data;
+}
+
+async function createuser(payload) {
+  const res = await axios.post(userURL + "users/", payload);
+  return res.data;
+}
+
+async function updateuser(payload) {
+  const res = await axios.put(userURL + "users/" + payload._id, payload);
+  return res.data;
+}
+
+async function registeruser(payload) {
+  const ret = await axios.post(userURL + "users/check", payload);
+  if (!ret.data.value) {
+    const register = await axios.post(userURL + "users/register", payload);
+    return register;
+  }
+  return ret;
+}
+

@@ -55,13 +55,43 @@
     }
 }
 
-.half {
+.half{
+    width: 50%;
+    margin: auto;
+}
+
+.w-30{
+    width: 30%;
+    margin: auto;
+}
+
+.seventyfive {
     width: 75%;
     margin: auto;
 }
 
+.high-300{
+    height: 300px;
+}
+
+.high-350{
+    height: 350px;
+}
+
+.high-400{
+    height: 500px;
+}
+
+.high-500{
+    height: 500px;
+}
+
+.high-full{
+    height: 100%;
+}
+
 .fill {
-    width: 100%;
+    width: 100% !important;
     max-width: 100%;
 }
 
@@ -71,6 +101,22 @@
     font-family: "Guardian Headline !important";
     font-weight: bold !important;
     font-size: 1rem !important;
+}
+
+.red{
+    background-color: red !important;
+}
+
+.icon{
+    width:24px !important;
+    margin-right:0px !important;
+}
+.text{
+    width:90% !important;
+}
+
+.search-modal{
+    box-shadow: none !important;
 }
 
 .field {
@@ -276,11 +322,6 @@ tbody.striped1 tr:nth-of-type(even) {
 tbody.striped1 tr:nth-of-type(odd) {
     background-color: rgba(220, 220, 220);
 }
-
-/* .v-layout.v-flex:nth-last-of-type(1){ 
-    max-height: 400px !important;
-    min-height: 400px !important;
-} */
 
 .list-item {
     font-size: 8px;

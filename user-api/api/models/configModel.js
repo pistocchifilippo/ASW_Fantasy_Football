@@ -4,6 +4,9 @@ module.exports = function (mongoose) {
     initialBudget: Number,
     initialScore: Number,
     matchDay: Number,
+    maxDay: Number,
+    adminUser: String,
+    adminPWD: String,
     modules: Array,
   });
   return mongoose.model('configmodel', ConfigSchema, 'Config');

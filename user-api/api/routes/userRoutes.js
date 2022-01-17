@@ -12,6 +12,15 @@ module.exports = app => {
     .get(userController.getConfig);
 
   app
+    .route('/config/day')
+    .get(userController.getCurrentDay);
+
+  app
+    .route('/config/advance')
+    .get(userController.canAdvanceDay)
+    .post(userController.advanceDay);
+
+  app
     .route('/users/check')
     .post(userController.checkUser);
 
@@ -70,5 +79,13 @@ module.exports = app => {
   app
     .route('/authenticate')
     .post(userController.checkOnLogin);
+
+  app
+    .route('/private/authenticate')
+    .post(userController.checkOnAdminLogin);
+
+  app
+    .route('/private/auth')
+    .post(userController.adminLogin);
 
 };

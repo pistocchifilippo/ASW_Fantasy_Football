@@ -1,14 +1,6 @@
-var mongoose = require('mongoose');
-
-const user = require("../models/userModel.js")(mongoose);
-const profile = require("../models/profileModel.js")(mongoose);
-const config = require("../models/configModel.js")(mongoose);
-const league = require("../models/leagueModel.js")(mongoose);
-
-const axios = require('axios');
-const leagueModel = require('../models/leagueModel.js');
-const baseURL = 'http://localhost:3008/';
-const selfURL = 'http://localhost:3002/';
+const db = require('../helpers/helper');
+const ERR = 'Some error occurred!';
+const ERR_ADV = 'Cannot advace MatchDay!';
 
 function Return(value, error) {
   this.value = value;
@@ -19,6 +11,11 @@ function TableUser(id, username, score) {
   this.username = username;
   this.score = score;
   this.id = id;
+}
+
+function Param(param1, param2) {
+  this.param1 = param1;
+  this.param2 = param2;
 }
 
 function Profile(userid, initialBudget, initialScore) {
@@ -37,372 +34,400 @@ function Profile(userid, initialBudget, initialScore) {
   ];
 }
 
-exports.list_all_users = (_, res) => {
-  user.find({}, (err, users) => {
-    if (err) res.send(err);
-    res.json(users);
-  });
+/* ---- USERS ---- */
+
+//get all users
+exports.list_all_users = async (_, res) => {
+  const ret = await db.getUsers()
+  res.json(ret);
 };
 
-exports.editUser = (req, res) => {
-  var ret = new Return(1, '');
-  user.findOneAndUpdate(
-    { _id: req.params.userId },
-    req.body,
-    { new: true },
-    (err, user) => {
-      if (err) res.send(err);
-      if (user == undefined) {
-        et.value = 0;
-        req.error = 'Failed to upload your data, try again later!';
+//get user by ID
+exports.read_a_user = async (req, res) => {
+  var ret = new Return(0, '');
+  const usr = await db.getUser(req.params.userId);
+  if (usr._id != '') {
+    ret.value = usr;
+  } else {
+    ret.value = 0;
+    ret.error = 'User not found on database.'
+  }
+  res.json(ret);
+};
+
+//read a user by profileID and return some data to display in a table
+exports.getTableUser = async (req, res) => {
+  var ret = new Return(0, ERR);
+  const prof = (await db.getProfile(req.params.profileID))[0];
+  if (prof._id != '') {
+    const usr = await db.getUser(prof.userID);
+    if (usr._id.valueOf() != '') {
+      var tuser = new TableUser(usr._id.valueOf(), usr.username, prof.score);
+      ret.error = '';
+      ret.value = tuser;
+    }
+  }
+  res.json(ret);
+};
+
+//check if the user exists or not
+exports.checkUser = async (req, res) => {
+  var ret = new Return(0, '');
+  const usr = await db.checkUser(req.body.username, req.body.email);
+  if (usr != undefined || usr != null) {
+    ret.value = 1;
+    ret.error = 'Email yet registered or username not valid!'
+  }
+  res.json(ret);
+};
+
+//insert a new user
+exports.create_a_user = async (req, res) => {
+  var ret = new Return(0, '');
+  const newuser = await db.saveUser(req.body);
+  if (!(newuser._id == '' || newuser == undefined)) {
+    ret.value = newuser;
+  } else {
+    ret.error = ERR;
+  }
+  res.json(ret);
+};
+
+//register a new user, creating a new profile
+exports.register = async (req, res) => {
+  const err = "Try again: we had some issues during registering process!";
+  var ret = new Return(0, err);
+  const conf = db.get_config();
+  if (conf._id != '') {
+    const newuser = await db.saveUser(req.body);
+    if (!(newuser._id == '' || newuser == undefined)) {
+      const p = new Profile(newuser._id, conf.initialBudget, conf.initialScore);
+      const newprofile = await db.saveProfile(p);
+      if (!(newprofile._id == '' || newprofile == undefined)) {
+        ret.value = 1;
+        ret.error = '';
       }
-      res.json(ret);
     }
-  );
+  }
+  res.json(ret);
 };
 
-exports.editProfile = (req, res) => {
+//edit an user
+exports.editUser = async (req, res) => {
   var ret = new Return(1, '');
-  profile.findOneAndUpdate(
-    { _id: req.params.id },
-    req.body,
-    { new: true },
-    (err, profile) => {
-      if (err) res.send(err);
-      if (profile == undefined) {
-        ret.value = 0;
-        ret.error = 'Failed to upload your data, try again later!';
+  const upd = await db.update_a_user(req.body);
+  if (upd != undefined) {
+    ret.value = upd;
+  } else {
+    ret.error = 'Failed to upload your data, try again later!';
+  }
+  res.json(ret);
+};
+
+//check user credentials on login
+exports.checkOnLogin = async (req, res) => {
+  var ret = new Return(0, '');
+  const usr = await db.checkLogin(req.body.username, req.body.password);
+  if (usr._id != '') {
+    ret.value = usr._id;
+  } else {
+    ret.error = 'The credentials you provided are incorrect!'
+  }
+  res.json(ret);
+};
+
+//update an user
+exports.update_a_user = async (req, _) => {
+  const __ = await db.update_a_user(req.body);
+};
+
+//delete an user: remove him from leagues, delete his profile and then delete the user entry
+exports.delete_a_user = async (req, res) => {
+  const uid = req.params.userId;
+  const prof = await db.getProfileByUserID(uid);
+  const pid = prof._id.toString();
+  var leagues = await db.getleaguesbyuser(pid);
+  //remove player from each league
+  leagues.forEach(async l => await db.removeuserfromleague(pid, l._id.toString()));
+  //remove user profile
+  await db.deleteProfile(pid);
+  //remove user
+  await db.deleteUser(uid);
+};
+
+/* ---- PROFILE ---- */
+
+exports.editProfile = async (req, res) => {
+  var ret = new Return(1, '');
+  var team = req.body.team.map(player => player._id);
+  req.body.team = team;
+  const upd = await db.update_a_profile(req.body);
+  if (upd != undefined) {
+    ret.value = upd;
+  } else {
+    ret.error = 'Failed to upload your data, try again later!';
+  }
+  res.json(ret);
+};
+
+/* ---- UTILS ---- */
+
+//check if the game can proceed to the next MatchDay
+exports.canAdvanceDay = async (_, res) => {
+  const canAdvance = await db.can_advance();
+  res.json(canAdvance);
+}
+
+//return actual MatchDay
+exports.getCurrentDay = async (_, res) => {
+  var ret = new Return('', '');
+  const day = await db.get_current_day();
+  if (day.matchDay != undefined && day._id != undefined) {
+    ret.value = day.matchDay;
+    ret.error = ''
+  } else {
+    ret.error = ERR;
+    ret.value = 0;
+  }
+  res.json(ret);
+}
+
+//advance the MatchDay (if possible), updating score for every user
+exports.advanceDay = async (_, res) => {
+  var ret = new Return('', '');
+  const canAdvance = await db.can_advance();
+  const current = await db.get_current_day();
+  const dayIndex = current.matchDay - 1;
+  var votes = [];
+  const result = await db.get_votes();
+  votes = result.data.value;
+  if (canAdvance == true) {
+    const profiles = await db.getProfiles();
+    // for each profile    
+    for (let i = 0; i < profiles.length; i++) {
+      var points = 0;
+      // the daily line up
+      const lineup = profiles[i].lineups[dayIndex];
+      if (lineup != undefined) {
+        // for each player
+        lineup.forEach(async player => {
+          if (player != null) {
+            const x = votes.find(el => el.id == player).score[dayIndex];
+            points += x;
+          }
+        })
       }
-      res.json(ret);
+      // update player score
+      await db.updateScore(profiles[i]._id, points);
     }
-  );
+    const conf = await db.get_config();
+    const nextMD = current.matchDay + 1
+    //update matchday
+    await db.updateMD(conf._id, nextMD);
+    ret.value = 1;
+    ret.error = '';
+  } else {
+    ret.value = 0;
+    ret.error = ERR_ADV;
+  }
+  res.json(ret);
+}
+
+/* ---- CONFIG ---- */
+
+//return system configurations
+exports.getConfig = async (_, res) => {
+  var ret = new Return('', '');
+  const conf = await db.get_config();
+  if (conf._id != undefined) {
+    ret.value = conf;
+    ret.error = ''
+  } else {
+    ret.error = 'Some error occurred!'
+    ret.value = 0;
+  }
+  res.json(ret);
 };
 
-exports.getConfig = (req, res) => {
-  var ret = new Return('', '');
-  config.find({}, (err, config) => {
-    if (config != undefined) {
-      ret.value = config;
-      ret.error = ''
-    } else {
-      ret.error = 'Some error occurred!'
-      ret.value = 0;
-    }
-    res.json(ret);
-  });
-};
-
-exports.getProfile = (req, res) => {
-  var ret = new Return('', '');
+//return profile
+exports.getProfile = async (req, res) => {
+  var ret = new Return(0, ERR);
+  var i = 0;
+  var team = [];
+  var lineup = [];
+  const current = await db.get_current_day();
   if (req.params.id == 0) {
     ret.error = 'Try again: we had some issues';
-    ret.value = 0;
     res.json(ret);
   } else {
-    profile.findOne({ userID: req.params.id }, (err, prof) => {
-      if (prof != undefined) {
-        ret.value = prof;
-        ret.error = ''
-        res.json(ret);
-      } else {
-        ret.error = 'The credentials you provided are incorrect!'
-        ret.value = 0;
-        res.json(ret);
-      }
-    });
-  }
-};
-
-exports.checkOnLogin = (req, res) => {
-  var ret = new Return('', '');
-  user.findOne({ $and: [{ username: req.body.username }, { password: req.body.password }] }, (err, user) => {
-    if (user != undefined) {
-      ret.value = user._id;
-      ret.error = ''
-    } else {
-      ret.error = 'The credentials you provided are incorrect!'
-      ret.value = 0;
-    }
-    res.json(ret);
-  });
-};
-
-exports.read_a_user = (req, res) => {
-  var ret = new Return(0, '');
-  user.findOne({ _id: req.params.userId }, function (err, result) {
-    if (err) { ret.error = err }
-    if (result == null) {
-      ret.value = 0;
-      ret.error = 'User not found on database.'
-    } else {
-      ret.value = result
-    }
-    res.json(ret);
-  });
-};
-
-exports.checkUser = (req, res) => {
-  var ret = new Return('', '');
-  user.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }, (err, user) => {
-    if (err) res.send(err);
-    ret.value = 0;
-    if (user) {
-      ret.value = 1;
-      ret.error = 'Email yet registered or username not valid!'
-    }
-    res.json(ret);
-  });
-};
-
-exports.create_a_user = (req, res) => {
-  const newUser = new user(req.body);
-  newUser.save((err, user) => {
-    if (err) res.send(err);
-    res.json(user);
-  });
-};
-
-
-exports.register = (req, res) => {
-  var ret = new Return(1, '');
-  var newUser = new user(req.body);
-  config.findOne({}, (err, config) => {
-    if (err) res.send(err);
-    if (config != undefined) {
-      ret.error = ''
-      newUser.save((error, user) => {
-        if (error) res.send(error);
-        if (!user) {
-          ret.value = 0;
-          ret.error = "Try again: we had some issues during registering process!";
-          res.json(ret);
-        }
-        let p = new Profile(user._id, config.initialBudget, config.initialScore);
-        var newProfile = new profile(p);
-        newProfile.save((error, prof) => {
-          if (error) res.send(error);
-          if (!prof) {
-            ret.value = 0;
-            ret.error = "Try again: we had some issues during registering process!";
+    const prof = await db.getProfileByUserID(req.params.id);
+    if (prof != undefined && prof._id != '') {
+      if (prof.team.length > 0) {
+        prof.team.forEach(async player => {
+          const result = await db.get_player(player);
+          team.push(result.data.value);
+          if (prof.lineups[current.matchDay - 1].includes(player)) {
+            lineup.push(result.data.value);
+          }
+          i++;
+          if (i == prof.team.length) {
+            prof.team = team;
+            prof.lineups[current.matchDay - 1] = lineup;
+            ret = new Return(prof, '');
             res.json(ret);
           }
         });
-      });
-    } else {
-      ret.error = 'Try again: we had some issues during registering process!'
-      ret.value = 0;
-    }
-    res.json(ret);
-  });
-
+      } else { res.json(ret); }
+    } else { res.json(ret); }
+  }
 };
 
-exports.update_a_user = (req, res) => {
-  user.findOneAndUpdate(
-    { _id: req.params.userId },
-    req.body,
-    { new: true },
-    (err, user) => {
-      if (err) res.send(err);
-      res.json(user);
-    }
-  );
-};
-
-exports.getLeaguesByUser = (req, res) => {
+//return all leagues of the player
+exports.getLeaguesByUser = async (req, res) => {
   var pid = req.params.profileID;
   var ret = new Return([], '');
-  league.find({}, (err, leagues) => {
-    if (leagues != undefined) {
-      leagues.forEach(league => {
-        if (league.players.includes(pid)) {
-          ret.value.push(league);
-        }
-      });
-      ret.error = ''
-    } else {
-      ret.error = 'An error has occurred!'
-      ret.value = 0;
-    }
-    res.json(ret);
-  });
-};
-
-exports.getUsername = (req, res) => {
-  var ret = new Return('', '');
-  var query = profile.findOne({ _id: req.params.profileID }).select('userID');
-  query.exec(function (err, profile) {
-    if (profile != undefined) {
-      var query2 = user.findOne({ _id: profile.userID }).select('username');
-      query2.exec(function (err, user) {
-        if (user != undefined) {
-          ret.value = user.username;
-          ret.error = ''
-        } else {
-          ret.error = 'An error has occurred!'
-          ret.value = 0;
-        }
-        res.json(ret);
-      }
-      );
-    } else {
-      ret.error = 'An error has occurred!'
-      ret.value = 0;
-    }
-  });
+  ret.value = await db.getleaguesbyuser(pid);
+  res.json(ret);
 }
 
-exports.getSearchResult = (req, res) => {
-  var ret = new Return('', '');
-  var query = league
-    .find({ name: { $regex: req.params.key } })
-    .select('name admin _id players');
-  query.exec(function (err, result) {
-    if (result != undefined) {
-      ret.value = result;
-      ret.error = '';
+//return username of the player with given profileID
+exports.getUsername = async (req, res) => {
+  var ret = new Return(0, '');
+  var uid = await db.getUserIDFromProfile(req.params.profileID);
+  if (uid != undefined && uid.userID != '') {
+    var user = await db.getUser(uid.userID);
+    if (user != undefined) {
+      ret.value = user.username;
     } else {
       ret.error = 'An error has occurred!'
-      ret.value = 0;
     }
-    res.json(ret);
-  });
+  }
+  res.json(ret);
+}
+
+//get some leagues based on searched string
+exports.getSearchResult = async (req, res) => {
+  var ret = new Return('', '');
+  const result = await db.getSearchResult(req.params.key);
+  if (result != undefined) {
+    ret.value = result;
+    ret.error = '';
+  } else {
+    ret.error = 'An error has occurred!'
+    ret.value = 0;
+  }
+  res.json(ret);
 };
 
-exports.getAllLeagues = (_, res) => {
-  var ret = new Return('', '');
-  league.find({}, (err, leagues) => {
-    if (err) res.send(new Return('', 'An error has occurred!'));
-    if (leagues) {
-      ret.value = leagues
-      ret.error = '';
-    } else {
-      ret.error = 'An error has occurred!'
-      ret.value = 0;
-    }
-    res.json(ret);
-  });
+/* ---- LEAGUE ---- */
+
+//return all leagues
+exports.getAllLeagues = async (_, res) => {
+  var ret = new Return(0, '');
+  const leagues = await db.get_leagues();
+  if (leagues != undefined) {
+    ret.value = leagues
+  } else {
+    ret.error = 'An error has occurred!'
+  }
+  res.json(ret);
 };
 
-exports.getTableUser = (req, res) => {
-  var ret = new Return('', '');
-  profile.findOne({ _id: req.params.profileID }, (err, profile) => {
-    if (err) res.send(new Return('', 'An error has occurred!'));
-    if (profile) {
-      user.findOne({ _id: profile.userID }, (err, user) => {
-        if (err) res.send(new Return('', 'An error has occurred!'));
-        if (user) {
-          var tuser = new TableUser(user._id.toHexString(), user.username, profile.score);
-          ret.error = '';
-          ret.value = tuser;
-          res.json(ret);
-        } else {
-          ret.error = 'An error has occurred!'
-          ret.value = 0;
-        }
-      });
-      ret.error = '';
-    } else {
-      ret.error = 'An error has occurred!'
-      ret.value = 0;
-      res.json(ret);
-    }
-  });
-};
-
-exports.joinLeague = (req, res) => {
-  var ret = new Return('', '');
+//remove the user from the league
+exports.leaveLeague = async (req, res) => {
+  var ret = new Return(0, '');
   var profileid = req.body[0];
   var leagueid = req.body[1];
-  league.findOne({ _id: leagueid }, (err, l) => {
-    if (l) {
-      if (!l.players.length == l.max_players) {
-        if (!l.players.includes(profileid)) {
-          l.players.push(profileid);
-          league.findOneAndUpdate(
-            { _id: leagueid },
-            l,
-            { new: true },
-            (err, lg) => {
-              if (lg) {
-                ret.value = lg;
-                ret.error = '';
-              } else {
-                ret.value = 0;
-                req.error = 'Failed to upload your data, try again later!';
-              }
-            }
-          );
-        } else {
-          ret.value = 0;
-          req.error = 'You are already a member of ' + l.name + '!';
-        }
+  const league = await db.get_league(leagueid);
+  if (league != undefined && league._id != '') {
+    if (league.players.includes(profileid)) {
+      league.players = league.players.filter(player => player != profileid);
+      const upd = await db.update_a_league(league);
+      if (upd) {
+        ret.value = upd;
       } else {
         ret.value = 0;
-        req.error = 'This league is already full!';
+        req.error = 'Failed to upload your data, try again later!';
       }
-      res.json(ret);
     }
-  });
+  }
+  res.json(ret);
 };
 
-exports.postNewLeague = (req, res) => {
-  const newLeague = new league(req.body);
-  var ret = new Return('', '');
-  newLeague.save((err, league) => {
-    if (err) {
-      ret.error = 'An error has occurred!'
-      ret.value = 0;
-      res.json(ret);
-    } else {
-      ret.value = 1;
-      ret.error = '';
-      res.json(ret);
+//insert the player in the league (if not full!)
+exports.joinLeague = async (req, res) => {
+  var ret = new Return(0, '');
+  var profileid = req.body[0];
+  var leagueid = req.body[1];
+  const league = await db.get_league(leagueid);
+  if (league._id != '' && league != undefined) {
+    if (league.players.length < league.max_players) {
+      if (!league.players.includes(profileid)) {
+        league.players.push(profileid);
+        const res = await db.update_a_league(league);
+        if (res != undefined) {
+          ret.value = res;
+        } else {
+          ret.error = 'Failed to upload your data, try again later!';
+        }
+      }
     }
-  });
+  }
+  res.json(ret);
 };
 
-exports.delete_a_user = (req, res) => {
-  /* user.deleteOne({ _id: req.params.userId }, err => {
-    if (err) res.send(err);
-    res.json({
-      message: 'user successfully deleted',
-     _id: req.params.userId
-    });
-  }); */
+//insert a new league
+exports.postNewLeague = async (req, res) => {
+  var ret = new Return(0, '');
+  const nl = await db.saveLeague(req.body)
+  if (nl) {
+    ret.value = nl;
+  } else {
+    ret.error = ERR;
+  }
+  res.json(ret);
 };
 
-
-/* API for token handling  */
+/* ---- API for token handling ---- */
 
 exports.login = async (req, res) => {
   var ret = new Return(0, '');
-  await axios
-    .get(selfURL + 'users/' + req.body.id)
-    .then(async result => {
-      if (result.data.value._id != undefined) {
-        await axios
-          .post(baseURL + 'login/', { id: req.body.id })
-          .then(result => {
-            ret.value = result.data;
-          })
-        /* .catch(err => {
-          ret.error = 'An error has occurred!';
-          res.json(ret);
-        }); */
-      } else {
-        ret.error = 'An error has occurred!';
-      }
-    })
-    .catch(/* err => res.json(err) */);
+  const usr = await db.getUser(req.body.id);
+  if (usr._id = ! '') {
+    const result = await db.login(req.body.id);
+    ret.value = result.data.value;
+    ret.error = result.data.error;
+  } else {
+    ret.error = 'An error has occurred!';
+  }
   res.json(ret);
 };
 
 exports.checkToken = async (req, res) => {
-  await axios
-    .post(baseURL + 'check/', req.body)
-    .then(result => {
-      res.json(result.data);
-    })
-    .catch(/* err => res.json(err) */);
+  const result = await db.check_token(req.body);
+  res.json(result.data);
+};
+
+/* ---- Admin section ---- */
+
+exports.checkOnAdminLogin = async (req, res) => {
+  var ret = new Return('', '');
+  const conf = await db.getAdminConfig(req.body.username, req.body.password);
+  if (conf._id.valueOf() != '') {
+    ret.value = conf._id;
+  } else {
+    ret.error = 'The credentials you provided are incorrect!'
+  }
+  res.json(ret);
+};
+
+exports.adminLogin = async (req, res) => {
+  var ret = new Return(0, '');
+  const log = await db.adminLogin(req.body.id);
+  if (log.data.value != '' && log.data.error == '') {
+    ret.value = log.data;
+  } else {
+    ret.error = ERR;
+  }
+  res.json(ret);
 };

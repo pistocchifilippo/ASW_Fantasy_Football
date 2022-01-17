@@ -1,15 +1,64 @@
 import md5 from 'js-md5'
+import Vue from 'vue';
 import User from '@/models/user';
 import League from '@/models/league';
 import Config from '@/models/config';
 import Profile from '@/models/profile';
+import VueCookie from 'vue-cookie';
+import Token from '@/models/token';
 
 const handleError = fn => (...params) => fn(...params);
 
+function Params(first, second, third) {
+  this.first = first;
+  this.second = second;
+  this.third = third;
+}
+
+Vue.use(VueCookie);
+
+function get_params(param) {
+  var ret = new Params("", "", "")
+  switch (param) {
+    case 'err1':
+      ret.first = "Some data are missing"
+      ret.second = "Please insert a valid name and a max of players"
+      ret.third = "error"
+      break;
+    case 'err2':
+      ret.first = "You can't play alone..."
+      ret.second = "Invite some friends!"
+      ret.third = "error"
+      break;
+    case 'ok':
+      ret.first = "League created successfully..."
+      ret.second = "Now you can invite your friends!"
+      ret.third = "success"
+      break;
+    default:
+      ret.first = ""
+      ret.second = ""
+      ret.third = "error"
+      break;
+  }
+  return ret
+}
 
 export const utils = {
 
   title: 'Fantasy Football',
+
+  readToken(name) {
+    return new Token(Vue.cookie.get(name));
+  },
+
+  setToken(name, value) {
+    Vue.cookie.set(name, value, 1);
+  },
+
+  removeToken(name) {
+    Vue.cookie.delete(name)
+  },
 
   cryptoMD5: handleError(payload => {
     payload.password = md5(payload.password);
@@ -39,6 +88,16 @@ export const utils = {
       group: "notify",
       title: "You sold " + player.name + " (" + obj.getTeam(player) + ")",
       text: "You gained " + player.value + " credits",
+    });
+  },
+
+  not_insert(obj, param) {
+    var params = get_params(param);
+    obj.$notify({
+      type: params.third,
+      group: "notify",
+      title: params.firs,
+      text: params.second,
     });
   },
 
@@ -187,6 +246,126 @@ export const utils = {
     return team.filter((player) => player.position == role).length;
   },
 
+  getMainCards() {
+    return [
+      {
+        title: "Insert lineups",
+        src: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/soccer-ball-sports-stadium-tunnel-allan-swart.jpg",
+        flex: 12,
+        to: "/lineups",
+      },
+      {
+        title: "Build Your Team",
+        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
+        flex: 6,
+        to: "/team",
+      },
+      {
+        title: "Profile Settings",
+        src: "https://durfeelawgroup.com/wp-content/uploads/2014/09/webview.gif",
+        flex: 6,
+        to: "/profile",
+      },
+      {
+        title: "Your Leagues",
+        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
+        flex: 12,
+        to: "/leagues",
+      },
+      {
+        title: "Stats",
+        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
+        flex: 12,
+        to: "/stats",
+      },
+    ]
+  },
+
+  getToolbarItems() {
+    return [
+      {
+        title: "Home",
+        to: "/",
+        icon: "mdi-home",
+        mobile_icon: "mdi-home-variant",
+      },
+      {
+        title: "Login",
+        to: "/login",
+        icon: "mdi-account",
+        mobile_icon: "mdi-account-outline",
+      },
+      {
+        title: "Sign-On",
+        to: "/signon",
+        icon: "mdi-account-plus",
+        mobile_icon: "mdi-account-plus-outline",
+      },
+      {
+        title: "Admin",
+        to: "/private/login",
+        icon: "mdi-account-plus",
+        mobile_icon: "mdi-account-plus-outline",
+      },
+    ]
+  },
+
+  getLoggedItems(username) {
+    return [
+      {
+        title: username,
+        to: "/profile",
+        icon: "mdi-cog-outline",
+        mobile_icon: "mdi-cog-outline",
+        function: false
+      },
+      {
+        title: "Your Team",
+        to: "/team",
+        icon: "mdi-account-group",
+        mobile_icon: "mdi-account-group-outline",
+        function: false
+      },
+      {
+        title: "Home",
+        to: "/main",
+        icon: "mdi-home",
+        mobile_icon: "mdi-home-variant",
+        function: false
+      },
+      {
+        title: "Logout",
+        to: "",
+        icon: "mdi-logout-variant",
+        mobile_icon: "mdi-logout-variant",
+        function: true
+      }
+    ]
+  },
+
+  getHomeCards() {
+    return [
+      {
+        title: "FANTASY FOOTBALL",
+        src: require("@/assets/ball.svg"),
+        flex: 12,
+        to: "",
+      },
+      {
+        title: "LOGIN",
+        src: "https://images.unsplash.com/photo-1589487391730-58f20eb2c308?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80",
+        flex: 6,
+        to: "/login",
+      },
+      {
+        title: "REGISTER",
+        src: "https://i.pinimg.com/originals/8d/60/00/8d600098f8aaecf7ead5591c26d1f9f3.jpg",
+        flex: 6,
+        to: "/signon",
+      },
+    ]
+  },
+
   colorRole(i) {
     switch (i) {
       case 1:
@@ -272,7 +451,7 @@ export const utils = {
     }
   },
 
-  getPosition(pos){
+  getPosition(pos) {
     pos++
     if (pos == 1) return "1st"
     else if (pos == 2) return "2nd"
@@ -280,8 +459,8 @@ export const utils = {
     else return pos + "th"
   },
 
-  sortTable(playerA, playerB){
-    if(playerA.score >= playerB.score){
+  sortTable(playerA, playerB) {
+    if (playerA.score >= playerB.score) {
       return -1;
     } else {
       return 1;
@@ -341,6 +520,10 @@ export const utils = {
       default:
         return 'ITA';
     }
+  },
+
+  emptyTeamErr() {
+    return 'YOUR TEAM IS EMPTY!';
   }
 
 };

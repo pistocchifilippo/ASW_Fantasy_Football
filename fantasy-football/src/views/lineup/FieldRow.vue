@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     getImg(player) {
-      return api.getPhoto(player.name);
+      return api.getInfo(player.name);
     },
     getPlayer(i) {
       return this.allPlayers.at(this.pos.indexOf(i));

@@ -1,11 +1,14 @@
 <template>
   <v-toolbar title="toolbar" flat class="blue flex-grow-0">
     <v-toolbar-title color="blue" class="text-uppercase toolbar-title">
-      Fantasy Football
+      <span class="ristrext">Fantasy Football</span>
     </v-toolbar-title>
     <img :src="mySVG" height="100%" />
     <v-spacer></v-spacer>
-    <LoggedToolbarModal v-if="this.user.username!=''" :username="this.user.username" />
+    <LoggedToolbarModal
+      v-if="this.user.username != ''"
+      :username="this.user.username"
+    />
     <div
       class="nav-link pr-3 mobile-nav toolbar-element"
       v-for="item in items"

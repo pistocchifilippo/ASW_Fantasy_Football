@@ -9,7 +9,7 @@
         :score="this.profile.score"
       />
     </v-container>
-    <v-card class="mx-auto my-12 mobile-login desktop-login">
+    <v-card class="mx-auto my-6 mobile-login desktop-login">
       <v-card-title class="error-card justify-center" flat>{{
         this.errore
       }}</v-card-title>

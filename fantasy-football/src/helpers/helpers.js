@@ -48,10 +48,6 @@ export const api = {
   //user
   deleteUser: handleError(async id => deleteuser(id)),
   //user
-  createUser: handleError(async payload => createuser(payload)),
-  //user
-  updateUser: handleError(async payload => updateuser(payload)),
-  //user
   register: handleError(async payload => registeruser(payload)),
   //user
   login: handleError(async payload => auth(payload)),
@@ -92,13 +88,13 @@ export const api = {
   //asset
   getAllTeams: handleError(async () => getallteams()),
   //asset
-  getPhoto: handleError(async name => getphoto(name)),
+  getInfo: handleError(async name => getinfo(name)),
   //asset
   getConfig: handleError(async () => getconfig()),
 }
 
 async function auth(payload) {
-  const res = await axios.post(userURL + "users/auth", payload);
+  const res = await axios.post(userURL + "user/auth", payload);
   if (res.data.error == '' && res.data.value.id != '') {
     return res
   }
@@ -206,7 +202,7 @@ async function getusername(profileID) {
 }
 
 async function loadparticipant(profileID) {
-  const res = await axios.get(userURL + "participant/" + profileID);
+  const res = await axios.get(userURL + "members/" + profileID);
   if (res.data.error == '' && res.data.value != '') {
     return res.data.value;
   }
@@ -222,7 +218,7 @@ async function newleague(league) {
 }
 
 async function checktkn(payload) {
-  const res = await axios.post(userURL + "users/checktkn", payload);
+  const res = await axios.post(userURL + "user/checktkn", payload);
   if (res.data.error == '' && res.data.value.id != '') {
     return res.data.value.id;
   }
@@ -294,7 +290,7 @@ async function getprofile(id) {
 }
 
 async function edituser(user) {
-  const res = await axios.put(userURL + "users/edit/" + user.id, user);
+  const res = await axios.put(userURL + "users/" + user.id, user);
   return res.data;
 }
 
@@ -304,14 +300,14 @@ async function editprofile(profile) {
 }
 
 function parsename(name) {
-  return name.replace("æ", "ae");
+  return name.replace(" ", "%20").replace("æ", "ae");
 }
 
-async function getphoto(name) {
+async function getinfo(name) {
   var param = parsename(name);
-  const URL = 'https://www.thesportsdb.com/api/v1/json/1/searchplayers.php?p=' + param;
+  const URL = 'https://www.thesportsdb.com/api/v1/json/2/searchplayers.php?p=' + param;
   const res = await axios.get(URL);
-  return res.data;
+  return res.data.player[0];
 }
 
 async function advanceMD() {
@@ -356,20 +352,10 @@ async function deleteuser(id) {
   return res.data;
 }
 
-async function createuser(payload) {
-  const res = await axios.post(userURL + "users/", payload);
-  return res.data;
-}
-
-async function updateuser(payload) {
-  const res = await axios.put(userURL + "users/" + payload._id, payload);
-  return res.data;
-}
-
 async function registeruser(payload) {
   const ret = await axios.post(userURL + "users/check", payload);
   if (!ret.data.value) {
-    const register = await axios.post(userURL + "users/register", payload);
+    const register = await axios.post(userURL + "users/", payload);
     return register;
   }
   return ret;

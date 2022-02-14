@@ -1,8 +1,9 @@
 <template>
   <v-main>
     <Toolbar title="header" />
-    <v-card class="mx-auto my-12 mobile-login desktop-login">
+    <v-card class="mx-auto mt-2 mobile-login flat desktop-login">
       <v-form
+        class="p-0"
         id="registerForm"
         v-model="isFormValid"
         name="form"
@@ -10,19 +11,16 @@
       >
         <v-card-title
           flat
-          class="justify-center mobile-title desktop-title"
-          style="font-family: Guardian Headline; font-weight: bold"
+          class="justify-center mobile-title desktop-title my-0 py-0 pt-4 guardian bold"
         >
           Fantasy Football
         </v-card-title>
-
         <v-card-title
-          class="justify-center mobile-subtitle desktop-subtitle"
-          style="font-family: Guardian Headline; font-weight: bold"
+          class="justify-center mobile-subtitle py-0 my-0 desktop-subtitle guardian bold"
         >
-          Create your team. <br />Join a league. <br />Support your Champions!
+          Create your team. <br/> Join a league. <br/> Support your Champions!
         </v-card-title>
-        <v-card-title class="error-card justify-center" flat>{{
+        <v-card-title class="error-card py-0 justify-center" flat>{{
           this.errore
         }}</v-card-title>
         <v-card-text class="justify-center">
@@ -32,7 +30,7 @@
             prepend-icon="mdi-account-box"
             type="text"
             v-model="user.name"
-            style="font-family: Guardian Headline"
+            class="guardian my-0 py-0"
           />
           <v-text-field
             label="E-Mail"
@@ -40,18 +38,18 @@
             prepend-icon="mdi-email"
             type="email"
             v-model="user.email"
-            style="font-family: Guardian Headline"
+            class="guardian my-0 py-0"
           />
           <v-text-field
             label="Username"
             v-model="user.username"
             :rules="required.concat(usernameRules)"
-            style="font-family: Guardian Headline"
+            class="guardian my-2 py-0"
             prepend-icon="mdi-clipboard-account"
           />
           <v-text-field
             label="Password"
-            style="font-family: Guardian Headline"
+            class="guardian my-0 py-0"
             :rules="required.concat(passwordRules)"
             prepend-icon="mdi-lock"
             v-model="user.password"
@@ -61,7 +59,7 @@
           />
           <v-text-field
             label="Repeat Password"
-            style="font-family: Guardian Headline"
+            class="guardian my-0 py-0"
             prepend-icon="mdi-lock"
             :rules="required.concat(passwordConfirmationRule)"
             v-model="rPassword"
@@ -90,7 +88,7 @@
         >
           Already a member? Log in!
         </v-card-title>
-        <v-card-actions class="justify-center card-mobile">
+        <v-card-actions class="justify-center pt-0 mt-0 card-mobile">
           <router-link
             class="justify-center card-mobile"
             to="/login"
@@ -98,8 +96,7 @@
           >
             <v-btn
               center
-              class="justify-center button-mobile"
-              style="font-family: Guardian Headline; color: white"
+              class="justify-center py-0  button-mobile infocard"
               color="blue"
               >Login</v-btn
             >
@@ -107,10 +104,9 @@
         </v-card-actions>
       </v-form>
     </v-card>
-    <v-footer color="blue" bottom class="justify-center">
+        <v-footer color="blue" bottom fixed class="justify-center">
       <Footer title="footer" />
-    </v-footer>
-  </v-main>
+    </v-footer>  </v-main>
 </template>
 
 <script>

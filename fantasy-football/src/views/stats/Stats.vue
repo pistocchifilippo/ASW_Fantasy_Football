@@ -8,7 +8,6 @@
         :budget="this.profile.budget"
         :score="this.profile.score"
       />
-
     </v-container>
     <v-container class="justify-center mb-1">
       <v-row dense>
@@ -29,10 +28,9 @@
           />
         </v-col>
       </v-row>
-      <br/>
-      <hr class="blue"/>
-      <br/>
-
+      <br />
+      <hr class="blue" />
+      <br />
     </v-container>
     <v-footer color="blue" class="justify-center">
       <Footer title="footer" />

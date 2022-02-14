@@ -5,12 +5,12 @@
     :key="this.$props.users.length"
   >
     <tr v-for="user in this.$props.users" :key="user.id">
-      <td>{{ user.name }}</td>
-      <td>{{ user.username }}</td>
+      <td> <span class="ristrext">{{ user.name }}</span></td>
+      <td> <span class="ristrext">{{ user.username }}</span></td>
       <td>
         <v-btn @click="deletePlayer(user._id)" text color="error">
-          DELETE
-          <v-icon right color="error">mdi-plus-box</v-icon>
+          <span class="ristrext show-on-mobile">DELETE</span>
+          <v-icon right color="error">mdi-minus-box</v-icon>
         </v-btn>
       </td>
     </tr>
@@ -31,7 +31,6 @@ export default {
   methods: {
     deletePlayer: async function (id) {
       await api.deleteUser(id)
-      console.log("delete player id", id);
     },
   },
 };

@@ -1,11 +1,11 @@
 <template>
   <tbody class="striped1" :key="this.$props.pl.length">
     <tr v-for="league in this.leagues" :key="league.id">
-      <td>{{ league.name }}</td>
-      <td>{{ league.username }}</td>
-      <td>
+      <td><span class="ristrext">{{ league.name }}</span></td>
+      <td><span class="ristrext">{{ league.username }}</span></td>
+      <td class="nopadding">
         <v-btn v-if="!league.bit" @click="join(league.id)" text color="success">
-          JOIN
+          <span class="ristrext m-0 px-0">JOIN</span>
           <v-icon right color="success">mdi-plus-box</v-icon>
         </v-btn>
       </td>

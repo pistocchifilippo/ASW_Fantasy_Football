@@ -9,11 +9,11 @@
     <v-simple-table height="400px" dense fixed-header>
       <thead>
         <tr>
-          <th class="text-left"></th>
-          <th class="text-left">Name</th>
-          <th class="text-left">Position</th>
+          <th class="nopadding text-left"></th>
+          <th class="nopadding text-left">Name</th>
+          <th class="nopadding text-left">Position</th>
           <th :colspan="2" class="text-left">Team</th>
-          <th class="text-left"></th>
+          <th class="nopadding text-left"></th>
         </tr>
       </thead>
       <LineupRow

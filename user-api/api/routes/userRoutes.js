@@ -5,20 +5,21 @@ module.exports = app => {
   app
     .route('/users')
     .get(userController.list_all_users)
-    .post(userController.create_a_user);
+    .post(userController.register);
+
+    app
+    .route('/users/:userId')
+    .get(userController.read_a_user)
+    .put(userController.editUser)
+    .delete(userController.delete_a_user);
 
   app
-    .route('/config')
-    .get(userController.getConfig);
+    .route('/user/auth')
+    .post(userController.login);
 
   app
-    .route('/config/day')
-    .get(userController.getCurrentDay);
-
-  app
-    .route('/config/advance')
-    .get(userController.canAdvanceDay)
-    .post(userController.advanceDay);
+    .route('/user/checktkn')
+    .post(userController.checkToken);
 
   app
     .route('/users/check')
@@ -34,26 +35,16 @@ module.exports = app => {
     .put(userController.editProfile);
 
   app
-    .route('/users/edit/:userId')
-    .put(userController.editUser);
+    .route('/search/:key')
+    .get(userController.getSearchResult);
 
   app
-    .route('/users/register')
-    .post(userController.register);
+    .route('/members/:profileID')
+    .get(userController.getTableUser);
 
   app
-    .route('/users/auth')
-    .post(userController.login);
-
-  app
-    .route('/users/checktkn')
-    .post(userController.checkToken);
-
-  app
-    .route('/users/:userId')
-    .get(userController.read_a_user)
-    .put(userController.update_a_user)
-    .delete(userController.delete_a_user);
+    .route('/leagues/:profileID')
+    .get(userController.getLeaguesByUser);
 
   app
     .route('/leagues')
@@ -63,18 +54,6 @@ module.exports = app => {
   app
     .route('/leagues/join')
     .post(userController.joinLeague);
-
-  app
-    .route('/search/:key')
-    .get(userController.getSearchResult);
-
-  app
-    .route('/participant/:profileID')
-    .get(userController.getTableUser);
-
-  app
-    .route('/leagues/:profileID')
-    .get(userController.getLeaguesByUser);
 
   app
     .route('/authenticate')
@@ -87,5 +66,19 @@ module.exports = app => {
   app
     .route('/private/auth')
     .post(userController.adminLogin);
+
+  app
+    .route('/config')
+    .get(userController.getConfig);
+
+  app
+    .route('/config/day')
+    .get(userController.getCurrentDay);
+
+  app
+    .route('/config/advance')
+    .get(userController.canAdvanceDay)
+    .post(userController.advanceDay);
+
 
 };

@@ -81,23 +81,11 @@ exports.checkUser = async (req, res) => {
   res.json(ret);
 };
 
-//insert a new user
-exports.create_a_user = async (req, res) => {
-  var ret = new Return(0, '');
-  const newuser = await db.saveUser(req.body);
-  if (!(newuser._id == '' || newuser == undefined)) {
-    ret.value = newuser;
-  } else {
-    ret.error = ERR;
-  }
-  res.json(ret);
-};
-
 //register a new user, creating a new profile
 exports.register = async (req, res) => {
   const err = "Try again: we had some issues during registering process!";
   var ret = new Return(0, err);
-  const conf = db.get_config();
+  const conf = await db.get_config();
   if (conf._id != '') {
     const newuser = await db.saveUser(req.body);
     if (!(newuser._id == '' || newuser == undefined)) {
@@ -205,7 +193,7 @@ exports.advanceDay = async (_, res) => {
     const profiles = await db.getProfiles();
     // for each profile    
     for (let i = 0; i < profiles.length; i++) {
-      var points = 0;
+      var points =  profiles[i].score;
       // the daily line up
       const lineup = profiles[i].lineups[dayIndex];
       if (lineup != undefined) {
@@ -272,12 +260,18 @@ exports.getProfile = async (req, res) => {
           i++;
           if (i == prof.team.length) {
             prof.team = team;
+            if(lineup.length==0){
+              lineup = new Array(11);
+            }
             prof.lineups[current.matchDay - 1] = lineup;
             ret = new Return(prof, '');
             res.json(ret);
           }
         });
-      } else { res.json(ret); }
+      } else {
+        ret = new Return(prof, '');
+        res.json(ret);
+      }
     } else { res.json(ret); }
   }
 };
@@ -413,7 +407,7 @@ exports.checkToken = async (req, res) => {
 exports.checkOnAdminLogin = async (req, res) => {
   var ret = new Return('', '');
   const conf = await db.getAdminConfig(req.body.username, req.body.password);
-  if (conf._id.valueOf() != '') {
+  if (conf != null) {
     ret.value = conf._id;
   } else {
     ret.error = 'The credentials you provided are incorrect!'

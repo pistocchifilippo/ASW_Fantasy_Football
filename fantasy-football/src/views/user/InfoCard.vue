@@ -1,6 +1,6 @@
 <template>
   <v-card flat :color="this.theme" class="pa-0 justify-center mobile-login desktop-login">
-      <v-card-title class="px-0 justify-center infocard" > {{ this.content }} </v-card-title>
+      <v-card-title class="px-0 justify-center infocard ristrext" > {{ this.content }} </v-card-title>
   </v-card>
 </template>
 

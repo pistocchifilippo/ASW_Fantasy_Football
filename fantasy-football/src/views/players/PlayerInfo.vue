@@ -1,8 +1,8 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent content-class="high-350 search-modal half">
+    <v-dialog v-model="dialog" persistent content-class="search-modal desktop-login  mobile-login">
       <template v-slot:activator="{ on, attrs }">
-        <v-icon color="blue" v-bind="attrs" v-on="on"> mdi-information </v-icon>
+        <v-icon class="img" color="blue" v-bind="attrs" v-on="on"> mdi-information </v-icon>
       </template>
       <PlayerCard
         @close="close()"

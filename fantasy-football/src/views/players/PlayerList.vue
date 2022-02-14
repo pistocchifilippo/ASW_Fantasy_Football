@@ -7,18 +7,18 @@
       :text="
         this.isTeam == true
           ? 'THIS IS YOUR TEAM!'
-          : 'PICK YOUR FAVOURITE PLAYERS!'
+          : 'BUY YOUR FAVOURITE PLAYERS!'
       "
     />
     <v-simple-table height="400px" dense fixed-header>
       <thead>
         <tr>
-          <th class="text-left"></th>
-          <th class="text-left">Name</th>
-          <th class="text-left">Position</th>
+          <th class="nopadding text-left"></th>
+          <th class="nopadding text-left">Name</th>
+          <th class="nopadding text-left">Position</th>
           <th :colspan="2" class="text-left">Team</th>
           <th class="text-left">Value</th>
-          <th class="text-left" v-if="this.btn"></th>
+          <th class="nopadding text-left" v-if="this.btn"></th>
         </tr>
       </thead>
       <PlayerRow

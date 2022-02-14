@@ -26,8 +26,6 @@
           <v-avatar
             class="profile"
             color="white"
-            height="90px"
-            width="90px"
             tile
           >
             <v-img

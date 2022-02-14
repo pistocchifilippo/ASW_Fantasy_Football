@@ -1,5 +1,10 @@
 <template>
-  <v-dialog content-class="search-modal seventyfive high-500" hide-overlay v-model="dialog" persistent >
+  <v-dialog
+    content-class="search-modal desktop-login mobile-login"
+    hide-overlay
+    v-model="dialog"
+    persistent
+  >
     <template v-slot:activator="{ on, attrs }">
       <v-card
         v-bind="attrs"
@@ -13,12 +18,17 @@
         </v-card-title>
       </v-card>
     </template>
-    <SearchLeagueCard class="seventyfive high-full" :pid="this.$props.profileID" @close="close()" @insert="insert" v-if="dialog && this.$props.profileID" />
+    <SearchLeagueCard
+      class="card-mobile high-full"
+      :pid="this.$props.profileID"
+      @close="close()"
+      @insert="insert"
+      v-if="dialog && this.$props.profileID"
+    />
   </v-dialog>
 </template>
 
 <script>
-
 import SearchLeagueCard from "@/views/leagues/SearchLeagueCard.vue";
 
 export default {
@@ -29,14 +39,12 @@ export default {
   data: () => ({
     dialog: false,
   }),
-  created() {
-  },
+  created() {},
   methods: {
     close() {
       this.dialog = false;
     },
-    insert: function () {
-    },
+    insert: function () {},
   },
 };
 </script>

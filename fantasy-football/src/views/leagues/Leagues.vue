@@ -55,7 +55,7 @@
         </v-layout>
       </v-container>
     </v-container>
-    <v-footer color="blue" bottom class="justify-center">
+    <v-footer color="blue" fixed bottom class="justify-center">
       <Footer title="footer" />
     </v-footer>
   </v-main>

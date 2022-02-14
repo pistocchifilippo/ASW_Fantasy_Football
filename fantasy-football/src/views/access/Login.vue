@@ -74,7 +74,7 @@
               class="justify-center button-mobile"
               style="font-family: Guardian Headline; color: white"
               color="blue"
-              >Sign-on</v-btn
+              >Sign-Up</v-btn
             >
           </router-link>
         </v-card-actions>

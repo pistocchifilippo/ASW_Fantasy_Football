@@ -251,7 +251,7 @@ export const utils = {
       {
         title: "Insert lineups",
         src: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/soccer-ball-sports-stadium-tunnel-allan-swart.jpg",
-        flex: 12,
+        flex: 6,
         to: "/lineups",
       },
       {
@@ -261,22 +261,22 @@ export const utils = {
         to: "/team",
       },
       {
-        title: "Profile Settings",
-        src: "https://durfeelawgroup.com/wp-content/uploads/2014/09/webview.gif",
-        flex: 6,
-        to: "/profile",
-      },
-      {
         title: "Your Leagues",
-        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
-        flex: 12,
+        src: "https://staticfanpage.akamaized.net/wp-content/uploads/sites/27/2021/06/GettyImages-1324550677-1024x683.jpg",
+        flex: 6,
         to: "/leagues",
       },
       {
         title: "Stats",
-        src: "https://olympics.nbcsports.com/wp-content/uploads/sites/10/2021/03/GettyImages-1309639270-e1616975233389.jpg?w=893",
-        flex: 12,
+        src: "https://img.ilgcdn.com/sites/default/files/styles/xl/public/foto/stadio_vuoto.jpg?_=1582637862",
+        flex: 6,
         to: "/stats",
+      },
+      {
+        title: "Profile Settings",
+        src: "https://durfeelawgroup.com/wp-content/uploads/2014/09/webview.gif",
+        flex: 12,
+        to: "/profile",
       },
     ]
   },
@@ -296,17 +296,17 @@ export const utils = {
         mobile_icon: "mdi-account-outline",
       },
       {
-        title: "Sign-On",
+        title: "Sign-Up",
         to: "/signon",
         icon: "mdi-account-plus",
         mobile_icon: "mdi-account-plus-outline",
       },
-      {
+/*       {
         title: "Admin",
         to: "/private/login",
         icon: "mdi-account-plus",
         mobile_icon: "mdi-account-plus-outline",
-      },
+      }, */
     ]
   },
 

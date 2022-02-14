@@ -4,25 +4,25 @@
       <td>
         <PlayerInfo :player="player" :team="getTeam(player)" />
       </td>
-      <td>{{ player.name }}</td>
-      <td>{{ player.position }}</td>
-      <td>{{ player.nationality }}</td>
-      <td>
+      <td class="nopadding"><span class="ristrext">{{ player.name }}</span></td>
+      <td class="nopadding"><span class="ristrext2">{{ player.position }}</span></td>
+      <td class=""><span class="ristrext2">{{ player.nationality }}</span></td>
+      <td class="nopadding">
         <img
           class="middle"
           height="20px"
           :src="require(`@/assets/flags/${getFlag(player)}.png`)"
         />
       </td>
-      <td>
+      <td class="nopadding">
         <v-btn
           v-if="squad.map((p) => p._id).includes(player._id) == false"
           @click="add(player)"
           text
           color="success"
         >
-          Add to lineup
-          <v-icon right color="success">mdi-account-minus</v-icon>
+          <span class="ristrext3 show-on-mobile">Add to lineup</span>
+          <v-icon right color="success">mdi-account-plus</v-icon>
         </v-btn>
         <!--         <v-btn v-else @click="remove(player)" text color="orange">
           Remove

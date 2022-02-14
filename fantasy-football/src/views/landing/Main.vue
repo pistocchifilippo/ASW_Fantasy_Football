@@ -9,7 +9,7 @@
         :score="this.profile.score"
       />
     </v-container>
-    <v-card flat class="mx-auto mobile-login desktop-login">
+    <v-card flat class="mx-auto mobile-login desktop-main">
       <v-container fluid>
         <v-row dense>
           <v-col v-for="card in cards" :key="card.title" :cols="card.flex">
@@ -17,8 +17,7 @@
               <v-img
                 :to="card.to"
                 :src="card.src"
-                class="align-end"
-                height="200px"
+                class="align-end main-card"
               ></v-img>
               <v-card-title
                 class="main justify-center"
@@ -30,7 +29,10 @@
         </v-row>
       </v-container>
     </v-card>
-    <v-footer color="blue" bottom class="justify-center">
+    <v-footer color="blue" bottom padless class="show-on-mobile justify-center">
+      <Footer title="footer" />
+    </v-footer>
+    <v-footer color="blue" bottom fixed padless class="show-on-desktop justify-center">
       <Footer title="footer" />
     </v-footer>
   </v-main>

@@ -2,7 +2,7 @@
   <v-dialog
     v-model="dialog"
     persistent
-    content-class="search-modal high-350 w-30"
+    content-class="search-modal high-350 desktop-login mobile-login"
   >
     <template v-slot:activator="{ on, attrs }">
       <v-card
@@ -18,7 +18,7 @@
       </v-card>
     </template>
     <NewLeagueCard
-      class="high-full"
+      class="high-full card-mobile"
       @close="close()"
       @notify="notify"
       @insert="insert"

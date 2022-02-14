@@ -1,6 +1,5 @@
 <template>
   <div style="height: 100%">
-    non autorizzato
     <v-img height="100%" width="100%" src="@/assets/unauthorized.jpeg" />
   </div>
 </template>

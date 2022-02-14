@@ -4,36 +4,45 @@
       <td>
         <PlayerInfo :player="player" :team="getTeam(player)" />
       </td>
-      <td>{{ player.name }}</td>
-      <td>{{ player.position }}</td>
-      <td>{{ player.nationality }}</td>
-      <td>
+      <td class="nopadding">
+        <span class="ristrext2"><b>{{ player.name }}</b></span>
+      </td>
+      <td class="nopadding">
+        <span class="ristrext2">{{ player.position }}</span>
+      </td>
+      <td class="pr-1">
+        <span class="ristrext2">{{ player.nationality }}</span>
+      </td>
+      <td class="nopadding">
         <img
-          class="middle"
+          class="middle img"
           height="20px"
           :src="require(`@/assets/flags/${getFlag(player)}.png`)"
         />
       </td>
-      <td>{{ player.value }}</td>
-      <td v-if="btn">
+      <td class="pr-1">
+        <span class="ristrext2">&nbsp;{{ player.value }}</span>
+      </td>
+      <td class="nopadding buy" v-if="btn">
         <v-btn
-          v-if="showBuy(player) && btn==true"
+          v-if="showBuy(player) && btn == true"
           :disabled="disabledBuy(player)"
           @click="purchase(player)"
           text
           color="blue"
-          class="buy"
+          class="nopadding buy"
         >
-          Buy
+          <span class="show-on-mobile">Buy</span>
           <v-icon right color="blue">mdi-account-plus</v-icon>
         </v-btn>
         <v-btn
-          v-if="showSell(player) && btn==true"
+          v-if="showSell(player) && btn == true"
           @click="sell(player)"
           text
           color="orange"
+          class="nopadding"
         >
-          Sell
+          <span class="show-on-mobile">Sell</span>
           <v-icon right color="orange">mdi-account-minus</v-icon>
         </v-btn>
       </td>
@@ -41,7 +50,6 @@
   </tbody>
 </template>
 <script>
-
 import { utils } from "@/helpers/utils";
 import PlayerInfo from "@/views/players/PlayerInfo.vue";
 
@@ -59,7 +67,7 @@ export default {
     isTeam: Boolean,
     sBar: false,
     canBuy: false,
-    btn: Boolean, 
+    btn: Boolean,
   }),
   created() {
     this.isTeam = this.$props.flag;

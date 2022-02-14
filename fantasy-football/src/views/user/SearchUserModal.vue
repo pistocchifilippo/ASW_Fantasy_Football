@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    content-class="search-modal seventyfive high-500"
+    content-class="search-modal desktop-login mobile-login"
     hide-overlay
     v-model="dialog"
     persistent
@@ -19,7 +19,7 @@
       </v-card>
     </template>
     <SearchUserCard
-      class="seventyfive high-full"
+      class="card-mobile high-full"
       @close="close()"
       @insert="insert"
     />

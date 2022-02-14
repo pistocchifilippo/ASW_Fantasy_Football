@@ -3,11 +3,11 @@
     <v-simple-table v-if="this.matchday > 0" height="100%" dense fixed-header>
       <thead>
         <tr>
-          <th class="text-left"></th>
-          <th class="text-left">Name</th>
-          <th class="text-left">Position</th>
-          <th :colspan="2" class="text-left">Team</th>
-          <th v-for="elem in this.matchday" :key="elem">MD {{ elem }}</th>
+          <th class="nopadding text-left"></th>
+          <th class="nopadding text-left">Name</th>
+          <th class="nopadding text-left">Position</th>
+          <th :colspan="2" class="nopadding text-left">Team</th>
+          <th  class="nopadding" v-for="elem in this.matchday" :key="elem">MD {{ elem }}</th>
         </tr>
       </thead>
       <StatRow
